@@ -1,0 +1,41 @@
+{
+  "name": "Email Data Group",
+  "domain": "https://www.emaildatagroup.net",
+  "tagline": "Your Green Marketing Partner",
+  "description": "Free email verification for your contact list: drop a CSV or Excel file, see what will bounce in seconds, and get the first 1,000 contacts verified free. Verified B2B and B2C email lists by industry, job title, technology and healthcare specialty.",
+  "og_image": "https://www.emaildatagroup.net/og/home.png",
+  "phone": "+1-800-710-4895",
+  "email": "info@emaildatagroup.net",
+  "address": {
+    "street": "2710 Media Center Drive",
+    "city": "Los Angeles",
+    "region": "CA",
+    "postal": "90065",
+    "country": "US"
+  },
+  "offer": {
+    "name": "Free email list verification",
+    "description": "Verification of the first 1,000 email contacts in an uploaded CSV or Excel file against live mail servers, with results sent to a work email and an optional 20 minute strategy call.",
+    "quantity": 1000,
+    "service_type": "Email verification",
+    "og_title": "1,000 contacts verified free",
+    "llms_line": "Free offer: upload a CSV or Excel list and the first 1,000 contacts are verified free. Results go to a work email. A 20 minute strategy call is optional."
+  },
+  "faq": [
+    [
+      "Where does my file go?",
+      "Nowhere, at first. Your browser reads it and builds the report on your screen. Only the first 1,000 contacts are sent for verification, and only after you ask."
+    ],
+    [
+      "Will a sales rep start calling me?",
+      "No. Your results arrive by email. The strategy call happens only if you book it."
+    ],
+    [
+      "What accuracy do you guarantee?",
+      "We would rather show you than promise you. Your verification report gives the real deliverable rate on your own contacts, row by row."
+    ]
+  ],
+  "robots_policy": "allow-all",
+  "logo": "logo.png",
+  "nav_cta": "Verify 1,000 contacts free"
+}

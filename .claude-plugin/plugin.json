@@ -1,0 +1,7 @@
+{
+  "name": "microsite-refresh",
+  "version": "0.1.0",
+  "description": "Refresh Champions Group data-list microsites into 2027-ready landing pages: purpose-first navigation (any list in two clicks), a drop-a-file verification hero, no-AI-slop copy, visual QA and agent readiness for AI crawlers, scrapers and browser agents.",
+  "author": { "name": "Champions Accelerator" },
+  "keywords": ["landing page", "microsite", "refresh", "agent ready", "llms.txt", "seo", "design"]
+}

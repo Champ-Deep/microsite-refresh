@@ -1,0 +1,11 @@
+{
+  "name": "champions-plugins",
+  "owner": { "name": "Champions Accelerator" },
+  "plugins": [
+    {
+      "name": "microsite-refresh",
+      "source": "./",
+      "description": "Refresh data-list microsites into 2027-ready landing pages: purpose-first navigation, drop-a-file verification hero, no-AI-slop copy, visual QA and agent readiness."
+    }
+  ]
+}

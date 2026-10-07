@@ -1,0 +1,343 @@
+{
+ "base": "https://www.emaildatagroup.net",
+ "groups": [
+  {
+   "id": "healthcare",
+   "name": "Healthcare",
+   "who": "Doctors, clinics and hospitals",
+   "hub": [
+    "All healthcare lists",
+    "/professional-email-list"
+   ],
+   "lists": [
+    [
+     "Physicians",
+     "/healthcare-database/physicians"
+    ],
+    [
+     "Dentists",
+     "/healthcare-database/dentists"
+    ],
+    [
+     "Nurses",
+     "/healthcare-database/nurses-email-list"
+    ],
+    [
+     "Pharmacists",
+     "/healthcare-database/pharmacists-email-list"
+    ],
+    [
+     "Hospitals",
+     "/healthcare-database/hospitals-email-list"
+    ],
+    [
+     "Cardiologists",
+     "/healthcare-database/cardiologist-email-list"
+    ],
+    [
+     "Oncologists",
+     "/healthcare-database/oncologist-email-list"
+    ],
+    [
+     "Dermatologists",
+     "/healthcare-database/dermatologist-email-list"
+    ]
+   ]
+  },
+  {
+   "id": "tech",
+   "name": "Technology users",
+   "who": "Companies running a specific software",
+   "hub": [
+    "All technology lists",
+    "/technology-user-list"
+   ],
+   "lists": [
+    [
+     "Salesforce customers",
+     "/list-of-companies-using/salesforce"
+    ],
+    [
+     "CRM users",
+     "/list-of-companies-using/crm"
+    ],
+    [
+     "Shopify users",
+     "/list-of-companies-using/shopify"
+    ],
+    [
+     "SAP customers",
+     "/list-of-companies-using/sap"
+    ],
+    [
+     "AWS customers",
+     "/technology/aws-customers-list"
+    ],
+    [
+     "NetSuite customers",
+     "/list-of-companies-using/netsuite"
+    ],
+    [
+     "Magento users",
+     "/list-of-companies-using/magento"
+    ],
+    [
+     "Tableau customers",
+     "/list-of-companies-using/tableau"
+    ],
+    [
+     "Siebel users",
+     "/list-of-companies-using/siebel"
+    ],
+    [
+     "ERP users",
+     "/erp/"
+    ]
+   ]
+  },
+  {
+   "id": "pros",
+   "name": "Professionals and executives",
+   "who": "People by job title",
+   "hub": [
+    "All professional lists",
+    "/professional-email-list"
+   ],
+   "lists": [
+    [
+     "CEOs",
+     "/marketing-database/ceo-email-list"
+    ],
+    [
+     "CFOs",
+     "/marketing-database/cfo-email-list"
+    ],
+    [
+     "HR leaders",
+     "/marketing-database/hr-email-list"
+    ],
+    [
+     "Attorneys",
+     "/marketing-database/attorney-email-list"
+    ],
+    [
+     "Accountants",
+     "/marketing-database/accountants-email-list"
+    ],
+    [
+     "Loan officers",
+     "/marketing-database/loan-officer-email-list"
+    ],
+    [
+     "Engineers",
+     "/marketing-database/engineering-email-list"
+    ]
+   ]
+  },
+  {
+   "id": "industry",
+   "name": "Industries",
+   "who": "Companies by sector",
+   "hub": [
+    "All industry lists",
+    "/buy-email-list-by-industry"
+   ],
+   "lists": [
+    [
+     "Realtors",
+     "/email-list-database/real-estate"
+    ],
+    [
+     "Retail",
+     "/retail-industry-email-list"
+    ],
+    [
+     "Banking",
+     "/banking-industry-email-list"
+    ],
+    [
+     "Automotive",
+     "/automotive-industry-email-list"
+    ],
+    [
+     "Advertising",
+     "/advertising-industry-email-list"
+    ],
+    [
+     "Defence",
+     "/defence-industry-email-list"
+    ],
+    [
+     "Medical device distributors",
+     "/marketing-database/medical-device-distributors-list"
+    ],
+    [
+     "Medical device manufacturers",
+     "/marketing-database/medical-device-manufacturers-list"
+    ]
+   ]
+  },
+  {
+   "id": "tele",
+   "name": "Phone system users",
+   "who": "Businesses on a given phone system",
+   "hub": [
+    "All phone system lists",
+    "/b2b-tele-users/telephone-users-email-lists-mailing-addresses"
+   ],
+   "lists": [
+    [
+     "A-TEL",
+     "/b2b-tele-users/a-tel-phone-users-list"
+    ],
+    [
+     "Telstra",
+     "/b2b-tele-users/telstra-phones-users-list"
+    ],
+    [
+     "Aastra",
+     "/b2b-tele-users/aastra-phone-users-list"
+    ],
+    [
+     "Honeywell",
+     "/b2b-tele-users/honeywell-users-list"
+    ],
+    [
+     "Uniden",
+     "/b2b-tele-users/uniden-phone-users-list"
+    ],
+    [
+     "Satworx",
+     "/b2b-tele-users/satworx-phones-users-list"
+    ],
+    [
+     "Brilliant",
+     "/b2b-tele-users/brilliant-phone-users-list"
+    ],
+    [
+     "Netfast",
+     "/b2b-tele-users/netfast-users-list"
+    ]
+   ]
+  },
+  {
+   "id": "general",
+   "name": "Broad B2B and B2C",
+   "who": "Wide reach, filtered to fit",
+   "hub": [
+    "Build a targeted list",
+    "/email-lists"
+   ],
+   "lists": [
+    [
+     "B2B email lists",
+     "/b2b-email-lists"
+    ],
+    [
+     "B2C email lists",
+     "/b2c-email-lists"
+    ],
+    [
+     "Targeted email lists",
+     "/email-lists"
+    ]
+   ]
+  }
+ ],
+ "services": {
+  "name": "Fix a list",
+  "hub": [
+   "All data services",
+   "/email-marketing"
+  ],
+  "lists": [
+   [
+    "Email verification (1,000 free)",
+    "#top"
+   ],
+   [
+    "B2B email appending",
+    "/b2b-email-appending"
+   ],
+   [
+    "B2C email appending",
+    "/b2c-email-appending"
+   ],
+   [
+    "Phone appending",
+    "/phone-appending"
+   ],
+   [
+    "Contact appending",
+    "/contact-appending"
+   ],
+   [
+    "Reverse appending",
+    "/reverse-appending"
+   ],
+   [
+    "Contact discovery",
+    "/contact-discovery"
+   ],
+   [
+    "Lead management",
+    "/lead-management"
+   ]
+  ]
+ },
+ "popular": [
+  "Dentists",
+  "Salesforce customers",
+  "CRM users",
+  "Shopify users",
+  "Loan officers",
+  "Cardiologists"
+ ],
+ "synonyms": {
+  "doctor": "Physicians",
+  "doctors": "Physicians",
+  "md": "Physicians",
+  "dental": "Dentists",
+  "lawyer": "Attorneys",
+  "lawyers": "Attorneys",
+  "legal": "Attorneys",
+  "cpa": "Accountants",
+  "accounting": "Accountants",
+  "real estate": "Realtors",
+  "realtor": "Realtors",
+  "property": "Realtors",
+  "bank": "Banking",
+  "finance": "Banking",
+  "mortgage": "Loan officers",
+  "car": "Automotive",
+  "auto": "Automotive",
+  "dealer": "Automotive",
+  "ecommerce": "Shopify users",
+  "e-commerce": "Shopify users",
+  "store": "Retail",
+  "cloud": "AWS customers",
+  "executive": "CEOs",
+  "c-level": "CEOs",
+  "founder": "CEOs",
+  "finance head": "CFOs",
+  "human resources": "HR leaders",
+  "recruiting": "HR leaders",
+  "oncology": "Oncologists",
+  "cardiology": "Cardiologists",
+  "skin": "Dermatologists",
+  "pharmacy": "Pharmacists",
+  "nursing": "Nurses",
+  "medical device": "Medical device manufacturers",
+  "marketing agency": "Advertising",
+  "agency": "Advertising",
+  "military": "Defence",
+  "engineering": "Engineers",
+  "crm": "CRM users",
+  "erp": "ERP users",
+  "consumer": "B2C email lists"
+ },
+ "custom_note": " from 14 million business contacts and 210 million consumer records",
+ "list_noun": "email lists",
+ "search_hint": "Try insurance, dentists, Salesforce users",
+ "catalog_note": "Every list is verified before delivery."
+}

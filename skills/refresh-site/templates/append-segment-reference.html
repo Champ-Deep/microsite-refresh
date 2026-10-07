@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body style="margin:0">
+<title>List Audit Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500;600&family=Montserrat:wght@800&display=swap">
+<style>
+  :root {
+    /* QuickAppend skin, light. SPAN palette is a placeholder until brand is confirmed. */
+    --ground: #F6F5F1;
+    --paper: #FCFBF8;
+    --rule: #C9C6BC;
+    --rule-soft: #E4E1D7;
+    --ink: #15171B;
+    --ink-2: #454A54;
+    --muted: #7A7F8A;
+    --accent: #0F6E56;
+    --accent-ink: #F6F5F1;
+    --accent-soft: #DCEBE3;
+    --cta: #0F6E56;
+    --cta-ink: #F6F5F1;
+    --good: #1E7F4F;
+    --warn: #A15E00;
+    --crit: #B4232F;
+    --sans: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    --head: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    --head-wdth: 112;
+    --mono: 'IBM Plex Mono', 'SFMono-Regular', Menlo, monospace;
+  }
+  :root[data-skin="ppl"] {
+    --ground: #F7F4FB;
+    --paper: #FCFAFE;
+    --rule: #C7BFD6;
+    --rule-soft: #E3DDEE;
+    --ink: #1B1230;
+    --ink-2: #463C5C;
+    --muted: #7C7391;
+    --accent: #6D08BE;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #EBDFF8;
+    --cta: #FFB703;
+    --cta-ink: #1B1230;
+    --head: 'Montserrat', 'Archivo', Arial, sans-serif;
+    --head-wdth: 100;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #131512; --paper: #1A1D19; --rule: #3B4038; --rule-soft: #272B26;
+      --ink: #EEEDE6; --ink-2: #C2C3BA; --muted: #8B8F86;
+      --accent: #5FC2A3; --accent-ink: #131512; --accent-soft: #1E3A30;
+      --cta: #5FC2A3; --cta-ink: #131512;
+      --good: #57C98C; --warn: #F0B04B; --crit: #FF7784;
+    }
+    :root:not([data-theme="light"])[data-skin="ppl"] {
+      --ground: #130E1C; --paper: #1A1425; --rule: #3F3452; --rule-soft: #2A2138;
+      --ink: #F2EDF8; --ink-2: #C9C0D8; --muted: #918AA3;
+      --accent: #B98CFF; --accent-ink: #130E1C; --accent-soft: #2E2146;
+      --cta: #FFB703; --cta-ink: #130E1C;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #131512; --paper: #1A1D19; --rule: #3B4038; --rule-soft: #272B26;
+    --ink: #EEEDE6; --ink-2: #C2C3BA; --muted: #8B8F86;
+    --accent: #5FC2A3; --accent-ink: #131512; --accent-soft: #1E3A30;
+    --cta: #5FC2A3; --cta-ink: #131512;
+    --good: #57C98C; --warn: #F0B04B; --crit: #FF7784;
+  }
+  :root[data-theme="dark"][data-skin="ppl"] {
+    --ground: #130E1C; --paper: #1A1425; --rule: #3F3452; --rule-soft: #2A2138;
+    --ink: #F2EDF8; --ink-2: #C9C0D8; --muted: #918AA3;
+    --accent: #B98CFF; --accent-ink: #130E1C; --accent-soft: #2E2146;
+    --cta: #FFB703; --cta-ink: #130E1C;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding-inline: 24px; }
+  @media (max-width: 600px) { .wrap { padding-inline: 16px; } }
+  h1, h2, h3, p { margin: 0; }
+  h1, h2 { text-wrap: balance; }
+  button { font: inherit; cursor: pointer; color: inherit; }
+  button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: var(--mono); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .lab { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+  /* Prototype controls: one mono line, no chrome */
+  .proto { border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+  .proto .wrap { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: center; padding-block: 8px; }
+  .proto .grp { display: inline-flex; gap: 2px; align-items: center; }
+  .proto .grp > span { color: var(--muted); margin-right: 6px; }
+  .tog { border: 0; background: transparent; padding: 4px 8px; font-family: var(--mono); font-size: 12px; border-bottom: 2px solid transparent; }
+  .tog[aria-pressed="true"] { border-bottom-color: var(--accent); color: var(--ink); font-weight: 600; }
+
+  /* Masthead */
+  .mast .wrap { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-block: 18px 14px; border-bottom: 1px solid var(--ink); flex-wrap: wrap; }
+  .wordmark { font-family: var(--head); font-variation-settings: 'wdth' var(--head-wdth); font-weight: 900; font-size: 20px; letter-spacing: -0.01em; }
+  .wordmark small { font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-left: 12px; }
+  .mast nav { display: flex; gap: 22px; font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+  @media (max-width: 720px) { .mast nav { display: none; } }
+
+  /* Hero: headline plus the slot */
+  .hero .wrap { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 32px 56px; padding-block: 44px 36px; align-items: end; }
+  @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; padding-block: 32px 24px; } }
+  .kicker { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  .hero h1 { font-family: var(--head); font-variation-settings: 'wdth' var(--head-wdth); font-weight: 900; font-size: clamp(34px, 5.2vw, 66px); line-height: 0.98; letter-spacing: -0.03em; margin-top: 14px; max-width: 12em; }
+  :root[data-skin="ppl"] .hero h1 { font-weight: 800; letter-spacing: -0.025em; }
+  .hero .lede { font-size: 17px; color: var(--ink-2); margin-top: 18px; max-width: 36em; line-height: 1.5; }
+
+  .slot { border: 1.5px dashed var(--rule); border-radius: 4px; padding: 20px 20px 18px; background: var(--paper); transition: border-color 140ms, background 140ms; }
+  .slot.over { border-color: var(--accent); background: var(--accent-soft); }
+  .slot .lab { display: block; }
+  .slot strong { display: block; font-family: var(--head); font-variation-settings: 'wdth' var(--head-wdth); font-weight: 700; font-size: 20px; margin-top: 6px; letter-spacing: -0.01em; }
+  .slot p { font-size: 13.5px; color: var(--ink-2); margin-top: 6px; }
+  .slot .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .btn { border: 1px solid var(--ink); background: var(--ink); color: var(--ground); border-radius: 3px; padding: 11px 16px; font-weight: 600; font-size: 14px; min-height: 44px; }
+  .btn.cta { background: var(--cta); border-color: var(--cta); color: var(--cta-ink); }
+  .btn.quiet { background: transparent; color: var(--ink); }
+  .btn.small { padding: 7px 12px; min-height: 36px; font-size: 13px; }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .terms { margin-top: 14px; font-family: var(--mono); font-size: 11.5px; color: var(--muted); display: grid; gap: 3px; }
+  .terms span::before { content: "\2713"; color: var(--good); margin-right: 8px; }
+  .slot-err { margin-top: 10px; color: var(--crit); font-size: 13px; font-weight: 600; }
+
+  /* Ledger */
+  .ledger { border-top: 2px solid var(--ink); }
+  .ledger .wrap { padding-block: 0 28px; }
+  .row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px 28px; padding-block: 18px; border-bottom: 1px solid var(--rule); }
+  @media (max-width: 700px) { .row { grid-template-columns: 1fr; gap: 8px; } }
+  .row > .lab { padding-top: 4px; }
+  .row.reveal { animation: rise 380ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes rise { from { transform: translateY(6px); opacity: 0.4; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .row.reveal { animation: none; } }
+
+  /* File row */
+  .file { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 32px; align-items: start; }
+  @media (max-width: 700px) { .file { grid-template-columns: 1fr; } }
+  .file .name { font-family: var(--mono); font-size: 14px; font-weight: 600; word-break: break-all; }
+  .file .meta { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); margin-top: 4px; }
+  .health { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 13.5px; }
+  .health span { display: inline-flex; align-items: baseline; gap: 6px; }
+  .health b { font-family: var(--mono); font-size: 15px; font-weight: 600; }
+  .health .good b { color: var(--good); } .health .warn b { color: var(--warn); } .health .crit b { color: var(--crit); }
+  .stamp { display: grid; grid-template-columns: auto auto; gap: 0 12px; align-items: center; }
+  .stamp b { font-family: var(--head); font-variation-settings: 'wdth' var(--head-wdth); font-weight: 900; font-size: 64px; line-height: 0.9; letter-spacing: -0.04em; color: var(--accent); }
+  .stamp b.g-c { color: var(--warn); } .stamp b.g-d { color: var(--crit); }
+  .stamp .sub { font-family: var(--mono); font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+  .stamp .sub strong { display: block; color: var(--ink); font-weight: 600; font-size: 13px; }
+  .chip { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; padding: 2px 7px; border: 1px solid var(--rule); border-radius: 3px; color: var(--ink-2); white-space: nowrap; }
+  .chip.ph { border-color: var(--warn); color: var(--warn); }
+  .chip.ok { border-color: var(--good); color: var(--good); }
+  .chip.ac { border-color: var(--accent); color: var(--accent); }
+
+  /* Columns row */
+  .cols { display: flex; flex-wrap: wrap; gap: 6px; }
+  .col { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; padding: 5px 9px; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper); }
+  .col .h { color: var(--muted); max-width: 16ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .col .arrow { color: var(--muted); }
+  .col .f { font-weight: 600; }
+  .col .c { color: var(--muted); font-size: 11px; }
+  .col.check { border-color: var(--warn); } .col.check .c { color: var(--warn); }
+  .col.none .f { color: var(--muted); font-weight: 400; }
+  .col select { font: inherit; font-size: 12px; border: 0; background: transparent; color: var(--ink); padding: 0; max-width: 17ch; }
+  .jev { margin-top: 14px; display: grid; gap: 8px; }
+  .jev form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .jev input { flex: 1 1 260px; max-width: 420px; font-family: var(--mono); font-size: 12.5px; padding: 9px 11px; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper); color: var(--ink); min-height: 40px; }
+  .jev .note { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+  .jev .note.err { color: var(--crit); }
+  .jev .note.ok { color: var(--good); }
+
+  /* Fields ledger */
+  .fields { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px 84px; gap: 0 18px; align-items: center; }
+  .fields > div { padding-block: 7px; border-bottom: 1px solid var(--rule-soft); min-width: 0; }
+  .fields .hd { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--rule); padding-block: 4px 8px; }
+  .fields .fl { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fields .fl.absent { color: var(--muted); font-weight: 400; }
+  .track { position: relative; height: 18px; }
+  .track .bar { position: absolute; left: 0; top: 6px; height: 6px; background: var(--ink); border-radius: 0 3px 3px 0; }
+  .track .bar.absent { width: 2px; background: var(--muted); border-radius: 0; }
+  .track .db { position: absolute; top: 1px; width: 2px; height: 16px; background: var(--accent); }
+  .track .db::after { content: ""; position: absolute; left: -3px; top: -3px; width: 8px; height: 3px; background: var(--accent); }
+  .fields .vals { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; }
+  .fields .vals small { color: var(--muted); }
+  .fields .add { font-family: var(--mono); font-size: 12.5px; text-align: right; color: var(--accent); font-weight: 600; white-space: nowrap; }
+  .fields .add.zero { color: var(--muted); font-weight: 400; }
+  @media (max-width: 700px) {
+    .fields { grid-template-columns: 104px minmax(0, 1fr) 70px; }
+    .fields .vals { display: none; }
+  }
+  .key { margin-top: 10px; font-family: var(--mono); font-size: 11.5px; color: var(--muted); display: flex; gap: 18px; flex-wrap: wrap; }
+  .key i { display: inline-block; vertical-align: middle; margin-right: 6px; }
+  .key .kb { width: 18px; height: 6px; background: var(--ink); }
+  .key .kt { width: 2px; height: 14px; background: var(--accent); }
+  .tip { position: fixed; pointer-events: none; z-index: 20; background: var(--ink); color: var(--ground); font-family: var(--mono); font-size: 12px; padding: 6px 9px; border-radius: 3px; white-space: nowrap; }
+
+  /* Gain row */
+  .gain { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 16px 40px; align-items: start; }
+  @media (max-width: 700px) { .gain { grid-template-columns: 1fr; } }
+  .big { font-family: var(--head); font-variation-settings: 'wdth' var(--head-wdth); font-weight: 900; font-size: clamp(44px, 5vw, 64px); line-height: 0.95; letter-spacing: -0.035em; }
+  .big + p { font-size: 13.5px; color: var(--ink-2); margin-top: 8px; max-width: 26em; }
+  .lines { list-style: none; margin: 0; padding: 0; }
+  .lines li { display: flex; justify-content: space-between; gap: 12px; padding-block: 7px; border-bottom: 1px solid var(--rule-soft); font-size: 13.5px; }
+  .lines li:first-child { border-top: 1px solid var(--rule); }
+  .lines li span { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); white-space: nowrap; }
+
+  /* Next row */
+  .recs { display: grid; gap: 0; }
+  .rec { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; padding-block: 12px; border-bottom: 1px solid var(--rule-soft); align-items: center; }
+  .rec:first-child { border-top: 1px solid var(--rule); }
+  .rec b { font-size: 15px; }
+  .rec.top b::before { content: "\2192 "; color: var(--accent); }
+  .rec p { font-size: 13px; color: var(--ink-2); }
+  .rec .pr { font-family: var(--mono); font-size: 12.5px; text-align: right; white-space: nowrap; }
+  .rec .pr small { display: block; color: var(--muted); font-size: 11px; }
+  .gate { margin-top: 18px; display: grid; gap: 10px; }
+  .gate form { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
+  .gate label { display: grid; gap: 4px; flex: 1 1 240px; max-width: 360px; }
+  .gate input { font: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper); color: var(--ink); min-height: 44px; }
+  .gate .hint { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+  .gate .err { font-size: 13px; color: var(--crit); font-weight: 600; }
+  .ctas { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  .prev-wrap { overflow-x: auto; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  table.prev { border-collapse: collapse; width: 100%; font-family: var(--mono); font-size: 12px; }
+  table.prev th, table.prev td { padding: 7px 10px; border-bottom: 1px solid var(--rule-soft); text-align: left; white-space: nowrap; }
+  table.prev th { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  table.prev tr:last-child td { border-bottom: 0; }
+  table.prev td.added { color: var(--accent); font-weight: 600; }
+  table.prev td.empty { color: var(--muted); }
+  .prev-key { margin-top: 8px; font-family: var(--mono); font-size: 11.5px; color: var(--muted); display: flex; gap: 18px; flex-wrap: wrap; }
+  .prev-key b { color: var(--accent); font-weight: 600; }
+
+  /* Foot */
+  .foot .wrap { padding-block: 22px 40px; font-size: 13px; color: var(--ink-2); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; border-top: 1px solid var(--ink); }
+  @media (max-width: 800px) { .foot .wrap { grid-template-columns: 1fr; } }
+  .foot .lab { display: block; margin-bottom: 6px; }
+  .foot p { max-width: 34em; }
+</style>
+
+<div class="proto">
+  <div class="wrap">
+    <span class="lab">Prototype</span>
+    <div class="grp"><span>skin</span><button type="button" class="tog" id="skin-qa" aria-pressed="true">QuickAppend</button><button type="button" class="tog" id="skin-ppl" aria-pressed="false">prepackagelists</button></div>
+    <div class="grp"><span>sample</span><button type="button" class="tog" id="sample-hc" aria-pressed="true">healthcare, 48 rows</button><button type="button" class="tog" id="sample-saas" aria-pressed="false">saas outbound, 36 rows</button></div>
+    <span class="chip ph">Master DB rates: placeholder</span>
+  </div>
+</div>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="wordmark"><span id="brand-name">QuickAppend</span><small id="brand-sub">SPAN Global Services</small></div>
+    <nav id="nav-links" aria-label="Site"><span>Append</span><span>Verify</span><span>Pricing</span><span>Samples</span></nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="kicker" id="kicker">File append and enrichment</span>
+      <h1 id="h1">Drop your list. See what it is missing in ten seconds.</h1>
+      <p class="lede" id="lede">QuickAppend reads the file in your browser, grades every field against our master database, and shows what we can add. Nothing uploads until you ask for the 25-row preview.</p>
+    </div>
+    <div class="slot" id="slot" tabindex="0" role="button" aria-label="Drop a CSV or Excel file, or press Enter to choose one">
+      <span class="lab">Input</span>
+      <strong>Drop a CSV, TSV or Excel file</strong>
+      <p>Up to 50,000 rows, any column names. The audit below rewrites itself for your file.</p>
+      <div class="actions">
+        <button type="button" class="btn" id="choose">Choose a file</button>
+        <button type="button" class="btn quiet" id="reload-sample">Reload sample</button>
+      </div>
+      <input type="file" id="file" class="sr" accept=".csv,.tsv,.txt,.xlsx,.xls">
+      <div class="slot-err" id="slot-err" hidden></div>
+      <div class="terms">
+        <span>Audit runs in your browser</span>
+        <span>Preview on 25 rows with a work email, then you decide</span>
+        <span id="trust-3">Matched against 800M+ contacts</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ledger" aria-live="polite">
+  <div class="wrap" id="rows"></div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div><span class="lab">01 Drop</span><p>CSV, TSV or Excel. Columns map to standard fields, and you correct any mapping in place.</p></div>
+    <div><span class="lab">02 Audit and preview</span><p>Fill rates, duplicates, role and free mail addresses, all in the browser. A work email unlocks 25 enriched rows so you can judge match quality yourself.</p></div>
+    <div><span class="lab" id="step3-l">03 Append</span><p id="step3-p">Pay per appended field, download the enriched file, re-audit it free any time.</p></div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Master DB placeholders (data team replaces) ---------- */
+  var MASTER = { contacts: '800M+', companies: '80M+', matchRate: 0.78, snapshot: 'placeholder' };
+
+  /* Ordered: first regex that matches wins, each field maps once. */
+  var FIELDS = [
+    { key: 'email',     label: 'Email',            db: 100, rx: /e-?mail/i,                                  desc: 'Email address of the person' },
+    { key: 'phone',     label: 'Direct phone',     db: 62,  rx: /phone|mobile|\btel\b|cell/i,                 desc: 'Phone, mobile or direct dial number' },
+    { key: 'linkedin',  label: 'LinkedIn URL',     db: 71,  rx: /linkedin/i,                                  desc: 'LinkedIn profile URL' },
+    { key: 'website',   label: 'Company website',  db: 96,  rx: /website|domain|\burl\b|\bweb\b/i,            desc: 'Company website or domain' },
+    { key: 'first',     label: 'First name',       db: 99,  rx: /^first|fname|given/i,                        desc: 'First or given name only' },
+    { key: 'last',      label: 'Last name',        db: 99,  rx: /^last|lname|surname|family/i,                desc: 'Last name, surname or family name only' },
+    { key: 'fullname',  label: 'Full name',        db: 99,  rx: /^(full ?)?name$|contact ?name|^person/i,     desc: 'Full name of the person in one column', hidden: true },
+    { key: 'title',     label: 'Job title',        db: 94,  rx: /title|designation|\bjob\b|\brole\b|position/i, desc: 'Job title, designation, role or position' },
+    { key: 'company',   label: 'Company',          db: 100, rx: /company|organi[sz]ation|account|employer|\bfirm\b/i, desc: 'Company, organisation, employer, account or firm name' },
+    { key: 'industry',  label: 'Industry',         db: 97,  rx: /industry|sector|vertical/i,                  desc: 'Industry, sector or vertical' },
+    { key: 'employees', label: 'Employee count',   db: 88,  rx: /employee|headcount|company ?size|staff/i,     desc: 'Employee count, headcount or company size' },
+    { key: 'revenue',   label: 'Revenue band',     db: 81,  rx: /revenue|turnover|annual sales/i,             desc: 'Annual revenue or turnover' },
+    { key: 'sic',       label: 'SIC / NAICS',      db: 90,  rx: /\bsic\b|naics/i,                             desc: 'SIC or NAICS industry code' },
+    { key: 'postal',    label: 'Postal code',      db: 78,  rx: /\bzip\b|postal|pin ?code|postcode/i,         desc: 'Postal or zip code' },
+    { key: 'city',      label: 'City',             db: 93,  rx: /city|town/i,                                 desc: 'City or town' },
+    { key: 'state',     label: 'State / region',   db: 95,  rx: /state|province|region/i,                     desc: 'State, province or region' },
+    { key: 'country',   label: 'Country',          db: 99,  rx: /country/i,                                   desc: 'Country' },
+    { key: 'address',   label: 'Street address',   db: 84,  rx: /address|street/i,                            desc: 'Street address' }
+  ];
+  var OTHER_DESC = 'None of the above: ids, dates, notes, owners, statuses, salutations, social handles other than LinkedIn, licence numbers, anything not listed';
+  var ROLE_RX = /^(info|sales|admin|support|contact|hello|marketing|hr|office|noreply|no-reply|enquiries|inquiries|billing|team|careers)@/i;
+  var FREE_RX = /@(gmail|yahoo|hotmail|outlook|live|aol|icloud|rediffmail|protonmail|ymail|msn|me)\./i;
+  var EMAIL_RX = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+  var HEALTH_RX = /physician|\bmd\b|\bdr\b|nurse|\brn\b|clinic|hospital|pharma|health|medical|surgeon|dentist|cardiolog|oncolog|pediatric|radiolog|practice|therap|care/i;
+  var TECH_RX = /\bsap\b|oracle|jd ?edwards|salesforce|netsuite|workday|servicenow|microsoft dynamics|hubspot/i;
+
+  var SKINS = {
+    qa: { brand: 'QuickAppend', sub: 'SPAN Global Services', nav: ['Append', 'Verify', 'Pricing', 'Samples'],
+      kicker: 'File append and enrichment',
+      h1: 'Drop your list. See what it is missing in ten seconds.',
+      lede: 'QuickAppend reads the file in your browser, grades every field against our master database, and shows what we can add. Nothing uploads until you ask for the 25-row preview.',
+      trust3: 'Matched against ' + MASTER.contacts + ' contacts',
+      step3l: '03 Append', step3p: 'Pay per appended field, download the enriched file, re-audit it free any time.',
+      gateBtn: 'Preview 25 enriched rows', finalBtn: 'Append my full file', finalGhost: 'Talk to a data specialist', nextLab: 'Append package' },
+    ppl: { brand: 'prepackagelists', sub: 'LakeB2B', nav: ['Healthcare', 'Technology installs', 'Executives', 'Guarantee'],
+      kicker: 'Pre-packaged B2B lists from $500',
+      h1: 'Find out what your list is missing before you buy another one.',
+      lede: 'Drop a CSV. We grade it in your browser against ' + MASTER.contacts + ' contacts, then show the segment that fills the gaps. Every list ships with a quality guarantee.',
+      trust3: 'Every segment carries a quality guarantee',
+      step3l: '03 Buy the segment', step3p: 'Fixed segments with counts, fields and a 25-row sample. Card checkout, no sales call unless you want one.',
+      gateBtn: 'Preview 25 rows from the segment', finalBtn: 'Buy this segment', finalGhost: 'Append my file instead', nextLab: 'Segments' }
+  };
+  var skin = 'qa';
+
+  /* ---------- Sample files (deterministic, fictional) ---------- */
+  function sampleHealthcare() {
+    var first = ['Priya','Daniel','Maria','James','Aisha','Robert','Chen','Laura','Samuel','Grace','Omar','Elena','Victor','Nadia','Peter','Hannah','Rahul','Sofia','Marcus','Ingrid','Tobias','Yuki','Carla','Ethan'];
+    var last = ['Menon','Whitfield','Rossi','Okafor','Rahman','Lindqvist','Wei','Duarte','Adeyemi','Halloran','Farouk','Petrova','Nunes','Karimi','Brandt','Osei','Iyer','Almeida','Bell','Solberg','Keller','Tanaka','Mendes','Park'];
+    var titles = ['Cardiologist','Practice Manager','Chief Nursing Officer','Physician, Internal Medicine','Director of Pharmacy','Clinic Administrator','Oncologist','Hospital CFO','Radiologist','Head of Patient Services','Dentist','Medical Director','','VP Operations','Pediatrician','Surgeon, Orthopedics'];
+    var cos = ['Northgate Medical Group','Riverside Clinic Partners','Meridian Health System','Lakeshore Cardiology','BlueRidge Pharmacy Network','Harbor Family Practice','Summit Oncology Associates','Cedar Valley Hospital','Bright Smile Dental','Pinecrest Pediatrics','Westfield Radiology','Oakmont Surgical Center'];
+    var cities = [['Austin','TX'],['Denver','CO'],['Tampa','FL'],['Columbus','OH'],['Phoenix','AZ'],['Raleigh','NC'],['Portland','OR'],['Nashville','TN']];
+    var rows = [['First Name','Last Name','Email Address','Job Title','Practice Name','Contact No.','City','State','Country','Lead Source']];
+    for (var i = 0; i < 46; i++) {
+      var f = first[i % first.length], l = last[(i * 7 + Math.floor(i / first.length) * 5) % last.length];
+      var co = cos[(i * 5) % cos.length];
+      var dom = co.toLowerCase().replace(/[^a-z]/g, '') + '.example';
+      var email = (f + '.' + l).toLowerCase() + '@' + dom;
+      if (i % 11 === 3) email = 'info@' + dom;
+      if (i % 13 === 5) email = (f + l).toLowerCase() + '@gmail.com';
+      if (i % 17 === 9) email = f.toLowerCase() + '.at.' + dom;
+      var t = titles[(i * 3) % titles.length]; if (i % 9 === 4) t = '';
+      var ph = (i % 3 === 0) ? '' : '(555) 01' + String(10 + (i * 37) % 90) + '-' + String(1000 + (i * 131) % 9000);
+      var c = cities[(i * 3) % cities.length];
+      rows.push([f, l, email, t, co, ph, (i % 6 === 2) ? '' : c[0], c[1], 'United States', ['Webinar', 'Conference', 'Referral', ''][i % 4]]);
+    }
+    rows.push(rows[3].slice()); rows.push(rows[8].slice());
+    return { name: 'healthcare_marketing_list.csv', rows: rows };
+  }
+  function sampleSaas() {
+    var names = ['Alex Morgan','Jordan Lee','Sam Patel','Taylor Brooks','Casey Nguyen','Riley Fischer','Morgan Silva','Jamie Cohen','Drew Hansen','Avery Kim','Quinn Baxter','Reese Delgado','Skyler Roth','Parker Ibrahim','Rowan Fitz','Emerson Vale','Blake Nakamura','Harper Quist','Dakota Reyes','Finley Marsh','Sage Okoro','Kai Lindgren','Noor Haddad','Remy Castel'];
+    var titles = ['VP Marketing','Head of Growth','Chief Revenue Officer','Director of Demand Generation','RevOps Manager','CMO','Marketing Operations Lead','Founder','','Head of Sales','Growth Marketing Manager','SVP Sales'];
+    var cos = ['Fathom Analytics Ltd','Kestrel Software','Northwind Cloud','Orbital Payments','Tallgrass HR','Beacon Data Co','Lumen Retail Tech','Signal Ridge Security','Parallax Logistics'];
+    var inds = ['Software','Fintech','Cloud infrastructure','HR technology','','Security','Retail technology','Logistics software'];
+    var sizes = ['51 to 200','201 to 500','11 to 50','501 to 1000','','1001 to 5000'];
+    var rows = [['Name','Email','Designation','Org','Domain','LI Profile','Sector','Emp Count','Last Activity']];
+    for (var i = 0; i < 35; i++) {
+      var n = names[i % names.length], co = cos[(i * 4) % cos.length];
+      var dom = co.toLowerCase().replace(/ ltd| co/g, '').replace(/[^a-z]/g, '') + '.example';
+      var parts = n.toLowerCase().split(' ');
+      var email = parts[0] + '@' + dom;
+      if (i % 10 === 6) email = 'sales@' + dom;
+      if (i % 12 === 7) email = parts.join('.') + '@outlook.com';
+      if (i % 19 === 11) email = parts[0] + '@' + dom.replace('.', '');
+      rows.push([n, email, titles[(i * 5) % titles.length], co, (i % 4 === 1) ? '' : dom, (i % 3 === 0) ? 'linkedin.com/in/' + parts.join('-') : '', inds[(i * 3) % inds.length], sizes[(i * 7) % sizes.length], '2026-0' + (1 + i % 8) + '-1' + (i % 9)]);
+    }
+    rows.push(rows[2].slice());
+    return { name: 'saas_outbound_q4.csv', rows: rows };
+  }
+
+  /* ---------- Parsing ---------- */
+  function parseDelimited(text) {
+    var firstLine = text.split(/\r?\n/)[0] || '';
+    var counts = { ',': (firstLine.match(/,/g) || []).length, '\t': (firstLine.match(/\t/g) || []).length, ';': (firstLine.match(/;/g) || []).length };
+    var d = ','; if (counts['\t'] > counts[d]) d = '\t'; if (counts[';'] > counts[d]) d = ';';
+    var rows = [], row = [], cell = '', q = false;
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (q) { if (ch === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch; }
+      else if (ch === '"') q = true;
+      else if (ch === d) { row.push(cell); cell = ''; }
+      else if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; row.push(cell); cell = ''; if (row.length > 1 || row[0] !== '') rows.push(row); row = []; }
+      else cell += ch;
+    }
+    if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+    return rows;
+  }
+  function normalize(rows) {
+    if (!rows.length) return { headers: [], data: [] };
+    var headers = rows[0].map(function (h) { return String(h == null ? '' : h).trim(); });
+    var data = rows.slice(1).filter(function (r) { return r.some(function (c) { return String(c == null ? '' : c).trim() !== ''; }); })
+      .map(function (r) { var o = []; for (var i = 0; i < headers.length; i++) o.push(String(r[i] == null ? '' : r[i]).trim()); return o; });
+    return { headers: headers, data: data };
+  }
+
+  /* ---------- Mapping: rules now, Jev when a key is present ---------- */
+  function ruleMap(headers) {
+    var assign = headers.map(function () { return { field: 'other', conf: null, src: 'rule' }; });
+    var used = {};
+    FIELDS.forEach(function (f) {
+      for (var i = 0; i < headers.length; i++) {
+        if (assign[i].field !== 'other' || used[f.key]) continue;
+        if (f.rx.test(headers[i])) { assign[i] = { field: f.key, conf: null, src: 'rule' }; used[f.key] = true; break; }
+      }
+    });
+    return assign;
+  }
+  function samplesFor(table, i) {
+    var out = [];
+    for (var r = 0; r < table.data.length && out.length < 3; r++) { var v = table.data[r][i]; if (v && out.indexOf(v) < 0) out.push(v.slice(0, 80)); }
+    return out;
+  }
+  function jevMap(table, key) {
+    var criteria = {};
+    FIELDS.forEach(function (f) { criteria[f.key] = f.desc; });
+    criteria.other = OTHER_DESC;
+    var t0 = performance.now();
+    return Promise.all(table.headers.map(function (h, i) {
+      var body = { model: 'typesafe/jev-1.13', state: { column_header: h, sample_values: samplesFor(table, i) },
+        questions: { field: { type: 'choice', instructions: 'Which standard B2B contact-list field does this spreadsheet column hold. Judge from the header and the sample values together.', criteria: criteria } } };
+      return fetch('https://openrouter.ai/api/alpha/decisions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (j) { var a = j.answers.field; return { field: a.choice, conf: a.confidence, src: 'jev', cost: (j.usage && j.usage.cost) || 0 }; });
+    })).then(function (assign) {
+      /* one column per field: keep the most confident, demote the rest */
+      var best = {};
+      assign.forEach(function (a, i) { if (a.field === 'other') return; if (!best[a.field] || assign[best[a.field]].conf < a.conf) best[a.field] = i; });
+      assign.forEach(function (a, i) { if (a.field !== 'other' && best[a.field] !== i) { a.field = 'other'; a.demoted = true; } if (a.conf < 0.6) { a.field = 'other'; } });
+      return { assign: assign, ms: Math.round(performance.now() - t0), cost: assign.reduce(function (s, a) { return s + (a.cost || 0); }, 0) };
+    });
+  }
+  function mappingFrom(assign) {
+    var map = {}; var unmapped = [];
+    assign.forEach(function (a, i) { if (a.field !== 'other') map[a.field] = i; else unmapped.push(state.table.headers[i]); });
+    if (map.fullname != null && map.first == null && map.last == null) { map.first = map.fullname; map.last = map.fullname; map._fullnameSplit = true; }
+    return { map: map, unmapped: unmapped, assign: assign };
+  }
+
+  /* ---------- Audit ---------- */
+  function audit(table, mapping) {
+    var rows = table.data, n = rows.length, map = mapping.map;
+    var fill = {};
+    FIELDS.forEach(function (f) {
+      if (f.hidden) return;
+      if (map[f.key] == null) { fill[f.key] = { present: false, filled: 0, pct: 0 }; return; }
+      var c = 0; rows.forEach(function (r) { if (r[map[f.key]] !== '') c++; });
+      fill[f.key] = { present: true, filled: c, pct: n ? Math.round(c / n * 100) : 0 };
+    });
+    var em = { valid: 0, invalid: 0, role: 0, free: 0, dupes: 0, blank: 0 }, seen = {};
+    if (map.email != null) rows.forEach(function (r) {
+      var e = r[map.email].toLowerCase();
+      if (!e) { em.blank++; return; }
+      if (!EMAIL_RX.test(e)) { em.invalid++; return; }
+      em.valid++; if (ROLE_RX.test(e)) em.role++; if (FREE_RX.test(e)) em.free++; if (seen[e]) em.dupes++; else seen[e] = 1;
+    });
+    var withEmail = em.valid + em.invalid;
+    var validPct = withEmail ? em.valid / withEmail * 100 : 0, dupPct = em.valid ? em.dupes / em.valid * 100 : 0, freePct = em.valid ? em.free / em.valid * 100 : 0;
+    var visible = FIELDS.filter(function (f) { return !f.hidden; });
+    var completeness = visible.reduce(function (s, f) { return s + Math.min(1, fill[f.key].pct / f.db); }, 0) / visible.length * 100;
+    var score = Math.round(0.5 * completeness + 0.2 * validPct + 0.15 * (100 - dupPct) + 0.15 * (100 - freePct));
+    var grade = score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 50 ? 'C' : 'D';
+    var gains = [];
+    visible.forEach(function (f) { var empty = n - fill[f.key].filled, est = Math.round(empty * MASTER.matchRate * f.db / 100); gains.push({ key: f.key, label: f.label, empty: empty, est: est, present: fill[f.key].present }); });
+    var byGain = gains.slice().sort(function (a, b) { return b.est - a.est; });
+    var rowsGain = Math.round(Math.max(Object.keys(seen).length, n - em.dupes) * MASTER.matchRate);
+    var textCols = ['title', 'industry', 'company'].map(function (k) { return map[k]; }).filter(function (i) { return i != null; });
+    var health = 0, tech = 0;
+    rows.forEach(function (r) { var s = textCols.map(function (i) { return r[i]; }).join(' '); if (HEALTH_RX.test(s)) health++; if (TECH_RX.test(s)) tech++; });
+    var countries = {};
+    rows.forEach(function (r) {
+      var c = map.country != null ? r[map.country] : '';
+      if (!c && map.email != null) { var m = r[map.email].match(/\.([a-z]{2})$/i); c = m ? ({ uk: 'United Kingdom', ca: 'Canada', au: 'Australia', de: 'Germany', in: 'India', ae: 'UAE' }[m[1].toLowerCase()] || '') : ''; }
+      if (c) countries[c] = (countries[c] || 0) + 1;
+    });
+    var topCountry = Object.keys(countries).sort(function (a, b) { return countries[b] - countries[a]; })[0] || '';
+    return { n: n, cols: table.headers.length, mapped: Object.keys(fill).filter(function (k) { return fill[k].present; }).length, unmapped: mapping.unmapped,
+      fill: fill, em: em, validPct: validPct, dupPct: dupPct, freePct: freePct, completeness: completeness, score: score, grade: grade,
+      gains: gains, byGain: byGain, rowsGain: rowsGain, healthShare: n ? health / n : 0, techShare: n ? tech / n : 0, topCountry: topCountry, countryShare: n && topCountry ? countries[topCountry] / n : 0 };
+  }
+
+  /* ---------- Render ---------- */
+  var state = { file: null, table: null, mapping: null, a: null, gated: false, isSample: true, jev: { status: 'idle', msg: '', ms: 0, cost: 0 } };
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function fmt(n) { return Number(n).toLocaleString('en-US'); }
+  function pl(n, s, p) { return n === 1 ? s : p; }
+  function tone(ok, warn) { return ok ? 'good' : warn ? 'warn' : 'crit'; }
+
+  function renderAll(animate) {
+    var a = state.a, s = SKINS[skin], em = a.em, html = '';
+
+    /* File */
+    html += '<div class="row"><span class="lab">File</span><div class="file"><div>'
+      + '<div class="name">' + esc(state.file) + ' <span class="chip ' + (state.isSample ? '' : 'ok') + '">' + (state.isSample ? 'sample' : 'yours, still in your browser') + '</span></div>'
+      + '<div class="meta num">' + fmt(a.n) + ' rows &middot; ' + a.cols + ' columns &middot; ' + a.mapped + ' fields recognised' + (a.unmapped.length ? ' &middot; ' + a.unmapped.length + ' not mapped' : '') + '</div>'
+      + '<div class="health">'
+      + '<span class="' + tone(a.validPct >= 97, a.validPct >= 90) + '"><b class="num">' + Math.round(a.validPct) + '%</b>valid email syntax</span>'
+      + '<span class="' + tone(em.dupes === 0, a.dupPct <= 5) + '"><b class="num">' + fmt(em.dupes) + '</b>' + pl(em.dupes, 'duplicate', 'duplicates') + '</span>'
+      + '<span class="' + tone(em.role === 0, true) + '"><b class="num">' + fmt(em.role) + '</b>role ' + pl(em.role, 'inbox', 'inboxes') + '</span>'
+      + '<span class="' + tone(em.free === 0, true) + '"><b class="num">' + fmt(em.free) + '</b>free mail</span>'
+      + '</div></div>'
+      + '<div class="stamp"><b class="g-' + a.grade.toLowerCase() + '">' + a.grade + '</b><div class="sub"><strong class="num">' + a.score + ' / 100</strong>completeness against<br>Master DB plus hygiene</div></div>'
+      + '</div></div>';
+
+    /* Columns */
+    html += '<div class="row"><span class="lab">Columns</span><div><div class="cols">' + state.mapping.assign.map(function (asg, i) {
+      var h = state.table.headers[i], f = FIELDS.filter(function (x) { return x.key === asg.field; })[0];
+      var cls = 'col' + (asg.field === 'other' ? ' none' : '') + (asg.src === 'jev' && asg.conf != null && asg.conf < 0.9 && asg.field !== 'other' ? ' check' : '');
+      var conf = asg.src === 'jev' ? '<span class="c num">' + (asg.field === 'other' ? 'jev' : 'jev ' + asg.conf.toFixed(2)) + '</span>' : '<span class="c">rule</span>';
+      var sel = '<select aria-label="Field for column ' + esc(h) + '" data-col="' + i + '"><option value="other"' + (asg.field === 'other' ? ' selected' : '') + '>not used</option>' + FIELDS.map(function (x) { return '<option value="' + x.key + '"' + (x.key === asg.field ? ' selected' : '') + '>' + esc(x.label) + '</option>'; }).join('') + '</select>';
+      return '<span class="' + cls + '"><span class="h" title="' + esc(h) + '">' + esc(h) + '</span><span class="arrow">&rarr;</span><span class="f">' + sel + '</span>' + conf + '</span>';
+    }).join('') + '</div>' + renderJev() + '</div></div>';
+
+    /* Fields */
+    var shown = FIELDS.filter(function (f) { return !f.hidden; }).map(function (f) { return { f: f, fill: a.fill[f.key], gain: a.gains.filter(function (g) { return g.key === f.key; })[0] }; });
+    shown.sort(function (x, y) { return (y.f.db - y.fill.pct) - (x.f.db - x.fill.pct); });
+    html += '<div class="row"><span class="lab">Fields</span><div><div class="fields">'
+      + '<div class="hd">Field</div><div class="hd">Fill rate, 0 to 100%</div><div class="hd">Yours / Master DB</div><div class="hd" style="text-align:right">We add</div>';
+    shown.forEach(function (x) {
+      var you = x.fill.pct, db = x.f.db;
+      html += '<div class="fl ' + (x.fill.present ? '' : 'absent') + '" title="' + esc(x.f.label) + '">' + esc(x.f.label) + '</div>'
+        + '<div class="track" tabindex="0" data-tip="' + esc(x.f.label) + ': your file ' + you + '%, Master DB ' + db + '% (placeholder)">'
+        + '<div class="bar ' + (you ? '' : 'absent') + '" style="width:' + (you || 0.5) + '%"></div><div class="db" style="left:calc(' + db + '% - 1px)"></div></div>'
+        + '<div class="vals num">' + you + '% <small>/ ' + db + '%</small></div>'
+        + '<div class="add num ' + (x.gain.est ? '' : 'zero') + '">' + (x.gain.est ? '+' + fmt(x.gain.est) : '0') + '</div>';
+    });
+    html += '</div><div class="key"><span><i class="kb"></i>your file</span><span><i class="kt"></i>Master DB fill rate, placeholder until the data team supplies the snapshot</span><span>greyed field: absent from your file</span></div></div></div>';
+
+    /* Gain */
+    var top = a.byGain.slice(0, 5);
+    html += '<div class="row"><span class="lab">We can add</span><div class="gain">'
+      + '<div><div class="big num">' + fmt(a.rowsGain) + '</div><p>of your ' + fmt(a.n) + ' contacts are expected to match at the placeholder ' + Math.round(MASTER.matchRate * 100) + '% rate. Each match can gain the fields listed here.</p></div>'
+      + '<ul class="lines">' + top.map(function (g) { return '<li>' + esc(g.label) + (g.present ? '' : ' (new field)') + '<span class="num">+' + fmt(g.est) + ' of ' + fmt(g.empty) + ' empty</span></li>'; }).join('') + '</ul>'
+      + '</div></div>';
+
+    /* Next */
+    html += '<div class="row"><span class="lab">' + esc(s.nextLab) + '</span><div>' + (skin === 'ppl' ? renderSegments(a) : renderPackage(a)) + '<div class="gate" id="gate">' + renderGate() + '</div></div></div>';
+
+    var host = $('rows'); host.innerHTML = html;
+    if (animate) Array.prototype.forEach.call(host.querySelectorAll('.row'), function (el, i) { el.classList.add('reveal'); el.style.animationDelay = (i * 90) + 'ms'; });
+    wireAll();
+  }
+
+  function renderJev() {
+    var j = state.jev, cls = j.status === 'error' ? ' err' : j.status === 'done' ? ' ok' : '';
+    var msg = j.msg || 'Rules mapped these columns. Paste an OpenRouter key to map with typesafe/jev-1.13 instead (about $0.00003 per column, the key stays in this tab).';
+    return '<div class="jev"><form id="jev-form"><label class="sr" for="jev-key">OpenRouter API key</label><input type="password" id="jev-key" placeholder="sk-or-v1-..." autocomplete="off" spellcheck="false"><button type="submit" class="btn small" id="jev-btn"' + (j.status === 'running' ? ' disabled' : '') + '>' + (j.status === 'running' ? 'Mapping with Jev' : 'Map with Jev') + '</button></form><span class="note' + cls + '">' + esc(msg) + '</span></div>';
+  }
+
+  function renderPackage(a) {
+    var top = a.byGain.slice(0, 3), html = '<div class="recs">';
+    top.forEach(function (g, i) {
+      html += '<div class="rec ' + (i === 0 ? 'top' : '') + '"><div><b>Append ' + esc(g.label.toLowerCase()) + '</b><p>' + fmt(g.est) + ' contacts expected to gain this field' + (g.present ? '' : ', a field your file does not have today') + '.</p></div><div class="pr">' + (i === 0 ? 'recommended' : '') + '<small>pricing after preview</small></div></div>';
+    });
+    if (a.em.dupes || a.em.role || a.em.free) html += '<div class="rec"><div><b>Clean before append</b><p>Remove ' + fmt(a.em.dupes) + ' ' + pl(a.em.dupes, 'duplicate', 'duplicates') + ', flag ' + fmt(a.em.role) + ' role ' + pl(a.em.role, 'inbox', 'inboxes') + ' and ' + fmt(a.em.free) + ' free mail ' + pl(a.em.free, 'address', 'addresses') + ' so you pay only for real people.</p></div><div class="pr">included<small>with any append</small></div></div>';
+    return html + '</div>';
+  }
+  function renderSegments(a) {
+    var segs = [];
+    if (a.healthShare >= 0.2) segs.push({ name: 'Physicians and Healthcare Executives Email List', why: Math.round(a.healthShare * 100) + '% of your titles and companies are clinical. This segment carries the fields your file lacks for that audience.', hub: 'Healthcare' });
+    if (a.techShare >= 0.1) segs.push({ name: 'SAP Customer List', why: Math.round(a.techShare * 100) + '% of your rows mention enterprise software installs.', hub: 'Technology installs' });
+    if (a.topCountry && a.countryShare >= 0.5) { var geo = { 'United States': 'US Business Executives by State', 'United Kingdom': 'UK Business Email List', 'Canada': 'Canada Business Executives', 'Australia': 'Australia Business Executives' }[a.topCountry]; if (geo) segs.push({ name: geo, why: Math.round(a.countryShare * 100) + '% of your contacts are in ' + a.topCountry + '. Extend reach in the same geography with matching fields.', hub: 'Executives by geography' }); }
+    if (segs.length < 2) segs.push({ name: 'Key Executives by Function', why: 'Your file leans on ' + (a.fill.title.pct >= 70 ? 'job titles' : 'company names') + '. This segment is built on function and seniority so it slots into the same campaigns.', hub: 'Professions and roles' });
+    return '<div class="recs">' + segs.slice(0, 3).map(function (sg, i) { return '<div class="rec ' + (i === 0 ? 'top' : '') + '"><div><b>' + esc(sg.name) + '</b><p>' + esc(sg.why) + '</p></div><div class="pr">from $500<small>' + esc(sg.hub) + ', count TBC</small></div></div>'; }).join('') + '</div>';
+  }
+  function renderGate() {
+    var s = SKINS[skin];
+    if (!state.gated) return '<div class="ctas"><button type="button" class="btn cta" id="gate-btn">' + esc(s.gateBtn) + '</button><span class="hint">Work email required. Only the 25 preview rows are sent to us.</span></div>';
+    if (state.gated === 'form') return '<form id="gate-form" novalidate><label><span class="lab">Work email</span><input type="email" id="gate-email" placeholder="you@company.com" autocomplete="email" required></label><button type="submit" class="btn cta">Send the preview</button></form><div class="err" id="gate-err" hidden></div><span class="hint">We email all 25 rows and show the first 10 here.</span>';
+    return renderPreview() + '<div class="ctas" style="margin-top:14px"><button type="button" class="btn cta">' + esc(s.finalBtn) + '</button><button type="button" class="btn quiet">' + esc(s.finalGhost) + '</button><span class="hint">Preview values are simulated in this prototype.</span></div>';
+  }
+  function renderPreview() {
+    var a = state.a, map = state.mapping.map, rows = state.table.data.slice(0, 10);
+    var cols = ['first', 'last', 'email', 'title', 'company', 'phone', 'linkedin', 'employees', 'revenue', 'industry'].map(function (k) { var f = FIELDS.filter(function (x) { return x.key === k; })[0]; return { key: k, label: f.label, idx: map[k] }; });
+    var sim = {
+      phone: function (i) { return '(555) 01' + String(20 + (i * 17) % 80) + '-' + String(2000 + (i * 97) % 8000); },
+      linkedin: function (i, r) { var n = (r[map.first] || r[map.fullname] || 'profile').toLowerCase().split(' ')[0]; return 'linkedin.com/in/' + n + '-' + (1000 + i * 37); },
+      employees: function (i) { return ['51 to 200', '201 to 500', '501 to 1000', '11 to 50'][i % 4]; },
+      revenue: function (i) { return ['$10M to $50M', '$50M to $100M', '$1M to $10M', '$100M to $500M'][i % 4]; },
+      industry: function (i) { return a.healthShare > 0.2 ? ['Hospitals and clinics', 'Physician practices', 'Pharmacy', 'Outpatient care'][i % 4] : ['Software', 'Financial technology', 'IT services', 'Cloud infrastructure'][i % 4]; },
+      title: function (i) { return ['Director of Operations', 'VP Marketing', 'Practice Manager', 'Head of Growth'][i % 4]; },
+      first: function (i, r) { return (r[map.fullname] || 'Sample').split(' ')[0]; },
+      last: function (i, r) { return (r[map.fullname] || 'Sample Contact').split(' ').slice(1).join(' ') || 'Contact'; },
+      email: function () { return 'matched@masterdb.example'; }, company: function () { return 'Matched Company'; }
+    };
+    var html = '<div class="prev-wrap"><table class="prev"><thead><tr>' + cols.map(function (c) { return '<th>' + esc(c.label) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    rows.forEach(function (r, i) {
+      var matched = (i * 7) % 10 < 8;
+      html += '<tr>' + cols.map(function (c) {
+        var v = c.idx != null ? r[c.idx] : '';
+        if (map._fullnameSplit && (c.key === 'first' || c.key === 'last')) v = sim[c.key](i, r);
+        if (v) return '<td>' + esc(v) + '</td>';
+        if (matched && sim[c.key]) return '<td class="added">' + esc(sim[c.key](i, r)) + '</td>';
+        return '<td class="empty">no match</td>';
+      }).join('') + '</tr>';
+    });
+    return html + '</tbody></table></div><div class="prev-key"><span><b>coloured</b> = appended from Master DB</span><span>showing 10 of 25 preview rows</span></div>';
+  }
+
+  /* ---------- Wiring ---------- */
+  var tip;
+  function wireAll() {
+    var b = $('gate-btn'); if (b) b.addEventListener('click', function () { state.gated = 'form'; $('gate').innerHTML = renderGate(); wireAll(); var i = $('gate-email'); if (i) i.focus(); });
+    var f = $('gate-form'); if (f) f.addEventListener('submit', function (e) {
+      e.preventDefault(); var v = $('gate-email').value.trim(), err = $('gate-err');
+      if (!EMAIL_RX.test(v)) { err.textContent = 'Enter a valid email address.'; err.hidden = false; return; }
+      if (FREE_RX.test(v)) { err.textContent = 'Use your work email. Free mail addresses cannot receive the preview.'; err.hidden = false; return; }
+      state.gated = 'done'; $('gate').innerHTML = renderGate(); wireAll();
+    });
+    var jf = $('jev-form'); if (jf) {
+      var saved = ''; try { saved = sessionStorage.getItem('lah-orkey') || ''; } catch (e) {}
+      if (saved) $('jev-key').value = saved;
+      jf.addEventListener('submit', function (e) { e.preventDefault(); runJev($('jev-key').value.trim()); });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.col select'), function (sel) {
+      sel.addEventListener('change', function () { reassign(parseInt(sel.getAttribute('data-col'), 10), sel.value); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.track'), function (t) {
+      t.addEventListener('mouseenter', function (e) { showTip(t, e); }); t.addEventListener('mousemove', moveTip); t.addEventListener('mouseleave', hideTip);
+      t.addEventListener('focus', function () { var r = t.getBoundingClientRect(); showTip(t, { clientX: r.left + 20, clientY: r.top }); }); t.addEventListener('blur', hideTip);
+    });
+  }
+  function showTip(t, e) { if (!tip) { tip = document.createElement('div'); tip.className = 'tip'; document.body.appendChild(tip); } tip.textContent = t.getAttribute('data-tip'); tip.hidden = false; moveTip(e); }
+  function moveTip(e) { if (!tip) return; var x = e.clientX + 12, y = e.clientY - 34, w = tip.offsetWidth; if (x + w > window.innerWidth - 8) x = window.innerWidth - w - 8; tip.style.left = x + 'px'; tip.style.top = Math.max(8, y) + 'px'; }
+  function hideTip() { if (tip) tip.hidden = true; }
+
+  function reassign(col, field) {
+    var assign = state.mapping.assign;
+    if (field !== 'other') assign.forEach(function (a, i) { if (i !== col && a.field === field) { a.field = 'other'; a.src = 'you'; a.conf = null; } });
+    assign[col] = { field: field, conf: null, src: 'you' };
+    state.mapping = mappingFrom(assign); state.a = audit(state.table, state.mapping); state.gated = false;
+    renderAll(false);
+  }
+
+  function runJev(key) {
+    if (!/^sk-or-/.test(key)) { state.jev = { status: 'error', msg: 'That does not look like an OpenRouter key (sk-or-...).' }; renderAll(false); return; }
+    try { sessionStorage.setItem('lah-orkey', key); } catch (e) {}
+    state.jev = { status: 'running', msg: 'Asking Jev about ' + state.table.headers.length + ' columns in parallel.' }; renderAll(false);
+    jevMap(state.table, key).then(function (res) {
+      state.mapping = mappingFrom(res.assign); state.a = audit(state.table, state.mapping); state.gated = false;
+      var low = res.assign.filter(function (a) { return a.field !== 'other' && a.conf < 0.9; }).length;
+      state.jev = { status: 'done', msg: 'Jev mapped ' + state.table.headers.length + ' columns in ' + res.ms + ' ms for $' + res.cost.toFixed(5) + '. Columns under 0.90 confidence are marked for a check.' + (low ? ' ' + low + ' to check.' : '') };
+      renderAll(true);
+    }).catch(function (err) {
+      state.jev = { status: 'error', msg: 'Could not reach OpenRouter from this page (' + (err && err.message ? err.message : 'network') + '). Inside the artifact preview outbound calls are blocked; open the local copy in Celsus, drop-audit-hero.html, and it will call Jev directly.' };
+      renderAll(false);
+    });
+  }
+
+  function loadRows(name, rows, isSample, animate) {
+    var table = normalize(rows);
+    if (!table.headers.length || !table.data.length) { showErr('That file has no rows we can read. Check it has a header row and at least one record.'); return; }
+    if (table.data.length > 50000) { showErr('This prototype reads the first 50,000 rows. Production streams larger files server side.'); table.data = table.data.slice(0, 50000); }
+    state.file = name; state.table = table; state.mapping = mappingFrom(ruleMap(table.headers)); state.a = audit(table, state.mapping); state.gated = false; state.isSample = isSample;
+    state.jev = { status: 'idle', msg: '' };
+    hideErr(); renderAll(animate);
+  }
+  function showErr(m) { var e = $('slot-err'); e.textContent = m; e.hidden = false; }
+  function hideErr() { $('slot-err').hidden = true; }
+  function handleFile(file) {
+    if (!file) return;
+    var name = file.name || 'file';
+    if (/\.xlsx?$/i.test(name)) {
+      if (!window.XLSX) { showErr('Excel support did not load. Save the sheet as CSV and drop it again.'); return; }
+      var fr = new FileReader();
+      fr.onload = function () { try { var wb = XLSX.read(new Uint8Array(fr.result), { type: 'array' }); var ws = wb.Sheets[wb.SheetNames[0]]; loadRows(name, XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' }), false, true); } catch (err) { showErr('Could not read that workbook. Save the first sheet as CSV and try again.'); } };
+      fr.readAsArrayBuffer(file); return;
+    }
+    var r = new FileReader();
+    r.onload = function () { loadRows(name, parseDelimited(String(r.result).replace(/^﻿/, '')), false, true); };
+    r.onerror = function () { showErr('Could not read the file. Try again or choose a different file.'); };
+    r.readAsText(file);
+  }
+
+  var currentSample = 'hc';
+  function loadSample(which, animate) {
+    currentSample = which; var s = which === 'saas' ? sampleSaas() : sampleHealthcare();
+    loadRows(s.name, s.rows, true, animate);
+    $('sample-hc').setAttribute('aria-pressed', which === 'hc' ? 'true' : 'false'); $('sample-saas').setAttribute('aria-pressed', which === 'saas' ? 'true' : 'false');
+  }
+  function applySkin(k) {
+    skin = k; var s = SKINS[k];
+    document.documentElement.setAttribute('data-skin', k);
+    $('skin-qa').setAttribute('aria-pressed', k === 'qa' ? 'true' : 'false'); $('skin-ppl').setAttribute('aria-pressed', k === 'ppl' ? 'true' : 'false');
+    $('brand-name').textContent = s.brand; $('brand-sub').textContent = s.sub;
+    $('nav-links').innerHTML = s.nav.map(function (n) { return '<span>' + esc(n) + '</span>'; }).join('');
+    $('kicker').textContent = s.kicker; $('h1').textContent = s.h1; $('lede').textContent = s.lede; $('trust-3').textContent = s.trust3;
+    $('step3-l').textContent = s.step3l; $('step3-p').textContent = s.step3p;
+    if (state.a) { state.gated = false; renderAll(false); }
+    try { localStorage.setItem('lah-skin', k); } catch (e) {}
+  }
+
+  var slot = $('slot'), input = $('file');
+  ['dragenter', 'dragover'].forEach(function (ev) { slot.addEventListener(ev, function (e) { e.preventDefault(); slot.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { slot.addEventListener(ev, function (e) { e.preventDefault(); slot.classList.remove('over'); }); });
+  slot.addEventListener('drop', function (e) { handleFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]); });
+  slot.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target === slot) { e.preventDefault(); input.click(); } });
+  $('choose').addEventListener('click', function () { input.click(); });
+  input.addEventListener('change', function () { handleFile(input.files && input.files[0]); input.value = ''; });
+  $('reload-sample').addEventListener('click', function () { loadSample(currentSample, true); });
+  $('sample-hc').addEventListener('click', function () { loadSample('hc', true); });
+  $('sample-saas').addEventListener('click', function () { loadSample('saas', true); });
+  $('skin-qa').addEventListener('click', function () { applySkin('qa'); });
+  $('skin-ppl').addEventListener('click', function () { applySkin('ppl'); });
+
+  var saved = null; try { saved = localStorage.getItem('lah-skin'); } catch (e) {}
+  applySkin(saved === 'ppl' ? 'ppl' : 'qa');
+  loadSample('hc', false);
+})();
+</script>
+
+</body>
+</html>
