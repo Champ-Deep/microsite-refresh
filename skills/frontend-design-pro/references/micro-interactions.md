@@ -41,3 +41,10 @@ Small responses to a hover, focus, tap or scroll that tell the reader the page i
 | Menu | blur-glide-menu | multi-level nav only |
 
 Install the original with `npx shadcn@latest add @microkit/<name>` in a React project, or copy the CSS variant from microkit.co and port it to the kit's tokens for a single-file page.
+
+
+## LakeKit set and the full catalog
+
+The `scroll-journey-kit` skill (kit in its `kit/` folder) ports a broader set to vanilla attributes: `data-mk="magnetic"` (magnetic-fill-button), `glow` (whats-new-glow-button, cursor-edge-glow-button), `shine` (subscribe-shine-button), `swap` (staggered-letter-text-swap), `underline` (gradient-underline-button), `spot` (social-highlight-cards), `tilt`, `aura`, `data-mk-slide` (sliding-underline-tabs, spotlight-indicator), `data-rail`, `data-mk="split"`, `data-mk-count`. Use at least six distinct effects per page and different effects on different elements.
+
+The remaining MicroKit items, by job, for when the element calls for them: fill and wipe (yellow-fill-preview-button, orange-circle-fill-button, circle-surface-button, inset-circle-button, outline-wipe-button, expanding-newsletter-button, expanding-contact-button, talk-arrow-reveal-button); arrow and icon swaps (icon-swap-button, sliding-send-button, get-started-circle-swap, see-more-swap-button, next-reveal-button, next-dot-fill-button, preview-browser-button, sliding-arrow-label, pricing-slide-link, read-more-swap, contact-reveal-button, white-contact-orbit-button, glow-arrow-button); shine and rim (aurora-download-button, layered-gradient-button, neon-invert-button, floating-newsletter-button); navigation (expanding-icon-tabs, blur-glide-menu, preview-hover-toolbar); cards and inputs (social-icon-buttons, contact-details-reveal, focus-input, scrub-number-field); commerce (secure-purchase-button). Recolour orange to the brand gold and blue to lavender.

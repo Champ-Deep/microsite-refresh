@@ -70,12 +70,12 @@ The template sections are hero (drop-a-file report), proof strip, list finder, a
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/refresh-site/scripts/build_site.py <build-folder> --out <build-folder>/dist
 ```
-This writes `dist/artifact.html` (the preview) and `dist/handoff/` (the full document, `index.md` twin, `robots.txt`, `llms.txt` and `sitemap.xml`). Design passes follow `frontend-design-pro`: 21st.dev components when connected, MicroKit micro-interactions, full-width layout and brand colours taken from the logo.
+This writes `dist/artifact.html` (the preview) and `dist/handoff/` (the full document, `index.md` twin, `robots.txt`, `llms.txt` and `sitemap.xml`). Design passes follow `frontend-design-pro`: 21st.dev components when connected, full-width layout and brand colours taken from the logo. Motion follows the `scroll-journey-kit` skill: the verify-skin keeps its drop-a-file hero as the interactive scene, add the LakeKit micro-interactions across nav, buttons, finder pills and cards (at least six distinct effects), split headlines, a count-up on the report numbers, the progress bar and a section rail. The opening glow-horizon scene is optional on list pages where the visitor arrives with a purpose; keep the drop box above the fold on phones.
 
 ### 7. Gates (all must pass)
 1. `no-ai-slop` in Gate mode on every line of copy, plus `python3 ${CLAUDE_PLUGIN_ROOT}/skills/no-ai-slop/slop_lint.py <file>`.
 2. No em or en dashes: `grep -cP '\xe2\x80[\x93\x94]'` prints 0 on every output file.
-3. `visual-verify` at 390 and 1440, light and dark. Open and critique every screenshot. Also screenshot the open nav panel, a finder search that matches and one that does not, and the mobile menu.
+3. `visual-verify` at 390 and 1440, light and dark, plus reduced motion and touch emulation, and one hover state per micro-interaction. Open and critique every screenshot. Also screenshot the open nav panel, a finder search that matches and one that does not, and the mobile menu.
 4. `agent-ready`: `agent_audit.py dist/handoff` shows 0 FAIL.
 5. Click depth: `click_depth.py dist/handoff/index.html --catalog catalog.json` shows every list linked.
 6. The Paddle bar: would a top product site ship this? If not, fix it first.

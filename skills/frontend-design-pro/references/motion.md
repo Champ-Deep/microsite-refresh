@@ -35,3 +35,8 @@ Stagger between siblings stays between 60 and 150ms; whole sequences stay under 
 2. Flatten the hero atmosphere before the PDF: hide the hero text, screenshot the hero as a JPEG, set it as the hero background, hide the SVG clouds and stars. This keeps the PDF near 1 to 2MB instead of 20MB of rasterized filters.
 3. `page.pdf` with width 1440px and height equal to `scrollHeight`, `print_background`, zero margins, one page.
 4. Check the PDF text for dashes with `pdftotext file.pdf - | grep -c` on the two dash characters; it must print 0.
+
+
+## Scroll journeys
+
+For the opening scene that scrubs into an interactive hero, use the `scroll-journey-kit` skill. Summary: a pinned stage whose scroll progress `--p` (0 to 1) drives the horizon, headline and hero object; pin on desktop only, stack on phones and tablets; reduced motion shows the end state; glow horizons are radial-gradient discs with `mix-blend-mode:screen`, not blur filters. The load sequence above still applies to scene one.

@@ -16,6 +16,7 @@ It was built on the emaildatagroup.net refresh (October 2026). That run ships in
 | `refresh-site` | The one to start with. Runs the whole refresh from intake to handoff |
 | `site-intake` | Collects the logo, contacts, approved claims and the full list catalog, and writes the site files |
 | `frontend-design-pro` | The design pipeline: landing page, polish, trend pass, 21st.dev components, MicroKit interactions |
+| `scroll-journey-kit` | Scroll scenes, glow-horizon opening, interactive sections and the LakeKit micro-interaction set (kit files included) |
 | `vinh-copywriting` | Body copy, subheads and CTA lines in a plain, persuasive voice |
 | `no-ai-slop` | Final gate on every line of copy. Zero dashes |
 | `visual-verify` | Screenshots at phone and desktop, light and dark, plus an interface audit |
