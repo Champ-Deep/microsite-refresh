@@ -16,9 +16,11 @@ It was built on the emaildatagroup.net refresh (October 2026). That run ships in
 | `refresh-site` | The one to start with. Runs the whole refresh from intake to handoff |
 | `site-intake` | Collects the logo, contacts, approved claims and the full list catalog, and writes the site files |
 | `frontend-design-pro` | The design pipeline: landing page, polish, trend pass, 21st.dev components, MicroKit interactions |
+| `signature-hero` | Works out the hero and first scroll with you (two rounds of questions, three storyboarded concepts), sources the object from 21st.dev and builds it to a tested scroll contract. The LakeB2B globe ships as the reference |
 | `scroll-journey-kit` | Scroll scenes, glow-horizon opening, interactive sections and the LakeKit micro-interaction set (kit files included) |
+| `scroll-craft` | Nate Herk's method for premium scroll pages (interview, grammars, feeling curve, hero depth, verification harness). MIT, vendored |
 | `vinh-copywriting` | Body copy, subheads and CTA lines in a plain, persuasive voice |
-| `no-ai-slop` | Final gate on every line of copy. Zero dashes |
+| `no-ai-slop` | Final gate on every line of copy, merged with Nate Herk's human-speak pattern library. Zero dashes |
 | `visual-verify` | Screenshots at phone and desktop, light and dark, plus an interface audit |
 | `agent-ready` | robots.txt for AI bots, llms.txt, markdown twin, JSON-LD, WebMCP form, plus an audit that proves it |
 | `ship-page` | Dev handoff package, Cloudflare checks and post-launch proof |

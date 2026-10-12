@@ -21,7 +21,8 @@ FILLER = ["it's worth noting", "it is worth noting", "it's important to note", "
           "in the age of", "the reality is", "the truth is", "in terms of", "with regard to", "going forward",
           "in this article", "let's dive in", "hope this email finds you well", "hope this finds you well",
           "just circling back", "just checking in"]
-THROAT = ["here's the thing", "here is the thing", "let me be clear", "i'll be honest", "the uncomfortable truth",
+THROAT = ["honestly?", "let's be real", "real talk", "i want you to sit with this", "and that's when it clicked",
+          "let me zoom out", "here's where it gets", "here's the part that", "here's the thing", "here is the thing", "let me be clear", "i'll be honest", "the uncomfortable truth",
           "here's what i mean", "let's be honest"]
 FAUX = ["what most people get wrong", "what nobody tells you", "here's what nobody tells you", "the part everyone misses",
         "this is the part most people skip", "what no one talks about", "most people miss", "nobody talks about"]
@@ -30,7 +31,8 @@ PUFFERY = ["a testament to", "testament to", "pivotal moment", "plays a vital ro
            "solidifies its position", "underscores its significance", "marks a pivotal", "stands as a"]
 WEASEL = ["experts agree", "studies show", "research shows", "industry reports suggest", "many argue",
           "widely regarded as", "it is widely believed"]
-META = ["that last part matters", "the key point is", "as you can see", "this distinction matters",
+META = ["that's a big number", "that's not nothing", "think about that.", "this changes how", "i want to be specific",
+        "that last part matters", "the key point is", "as you can see", "this distinction matters",
         "matters more than it sounds", "let that sink in", "read that again"]
 RECAP = [r"^\s*in conclusion\b", r"^\s*ultimately,", r"^\s*overall,", r"^\s*to sum up\b", r"^\s*in summary\b"]
 SUPERFICIAL = re.compile(r",\s+(highlighting|underscoring|showcasing|reflecting|emphasizing|signaling)\b", re.I)
@@ -48,6 +50,9 @@ NEG_TRICOLON = re.compile(r"\b(wasn'?t|isn'?t|not)\s+(the\s+)?\w+,\s+(the\s+)?\w
 META_START = re.compile(r"(?:^|[.!?]\s+)(Here'?s (why|how|what)\b)", re.M)
 NEG_LIST = re.compile(r"\bNot an? [^.]{1,30}\.\s+Not an? [^.]{1,30}\.", re.I)
 COLON_REVEAL = re.compile(r"(?:^|[.!?]\s+)((?:The|Our|My|Your|This|That|Here'?s|One thing)\b[^.:!?\n]{0,40}):\s+([a-z][^.!?\n]{2,140}[.!?])", re.M)
+NO_JUST = re.compile(r"\bNo [^.!?\n]{1,30}[.,]\s+No [^.!?\n]{1,30}[.,](\s+(Just|Only|All)\b[^.!?\n]{1,40}[.!])?")
+FAKE_QA = re.compile(r"(?:^|[.!?]\s+)((?:The|Our|Your|My|And the)\s[^?\n]{2,40}\?)\s+[A-Z][^.?!\n]{1,50}[.!]", re.M)
+SALES = ["unlock your", "supercharge your", "to the next level", "take your", "currency of", "the new oil", "the future of"]
 FRAGMENT_KICKER = re.compile(r"\b(That'?s it\.|That'?s the whole thing\.|Full stop\.|Period\.|Simple as that\.|Game over\.)", re.I)
 
 def sentences(t):
@@ -85,6 +90,12 @@ def lint(text, is_push=False, ignore_quoted=True):
     for rx in BINARY:
         for m in rx.finditer(text): add("HIGH", "binary_contrast", m.group(0))
     for m in NEG_LIST.finditer(text): add("HIGH", "negative_listing", m.group(0))
+    for m in NO_JUST.finditer(text): add("HIGH", "negative_fragments", m.group(0))
+    for m in FAKE_QA.finditer(text): add("MED", "fake_question_answer", m.group(1))
+    for p in SALES:
+        i = low.find(p)
+        while i != -1:
+            add("MED", "sales_language", text[i:i+len(p)+25]); i = low.find(p, i+1)
     for m in NEG_TRICOLON.finditer(text): add("MED", "negative_listing", m.group(0))
     for m in META_START.finditer(text): add("MED", "metadiscourse", m.group(1))
     # robotic parallelism: consecutive sentences with the same first two words or the same last two words

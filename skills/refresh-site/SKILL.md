@@ -1,6 +1,6 @@
 ---
 name: refresh-site
-description: Refreshes a Champions Group data-list microsite (homepage or list page) into a 2027-ready landing page that converts, serves visitors in two clicks and is readable by AI crawlers and agents. Use when someone says "refresh this site", "redesign emaildatagroup.net", "refresh this microsite", "make this page 2027 ready", "rebuild this list site", "do what we did for EDG on <site>", or pastes a microsite URL and asks for a new look. Runs intake, the argument, the build, every quality gate and the handoff.
+description: Refreshes a Champions Group data-list microsite (homepage or list page) into a 2027-ready landing page that converts, serves visitors in two clicks and is readable by AI crawlers and agents. Use when someone says "refresh this site", "redesign emaildatagroup.net", "refresh this microsite", "make this page 2027 ready", "rebuild this list site", "do what we did for EDG on this site", or pastes a microsite URL and asks for a new look. Runs intake, the argument, the build, every quality gate and the handoff.
 ---
 
 # Refresh a microsite
@@ -32,6 +32,9 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/frontend-design-pro/modes/landing-page/MODE.m
 - the primary action (default: free verification of the first 1,000 contacts)
 - three headline directions that pass the swap test
 - three visual identities, each with an ASCII preview
+
+### 3b. Signature hero (direction workshop)
+Run the `signature-hero` skill now, before copy. It asks the owner a second round of questions about the first ten seconds, the living object, motion appetite and reference feel, proposes three concepts with storyboards, and records the pick in `brief.md`. The hero and the first scroll are the part owners remember most (the LakeB2B globe is the bar), so do not skip it or settle for a static hero. Read `signature-hero/references/innovation-log.md` first so this site gets a concept the last one did not.
 
 ### 4. Copy
 Copy `templates/verify-skin/*` into the build folder. Run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/refresh-site/scripts/logo_palette.py <logo>` and set the `:root` colour tokens in `template.html` from the logo (EDG: logo red is the "problem" pencil, logo green is "verified"). Darken a colour for text until it reaches 4.5:1 contrast, and keep the pure logo hex for fills. Rewrite every line of visible copy for this site:
@@ -67,6 +70,7 @@ The template sections are hero (drop-a-file report), proof strip, list finder, a
 - Everything above comes from `catalog.json`, so `build_site.py` renders every link as real HTML. A group with no hub page on the live site sets `"hub": null`. The panel then links its overflow to the finder, and the brief asks for a hub page.
 
 ### 6. Build
+Build the signature hero from step 3b to `signature-hero/references/build-contract.md`, then fit the rest of the page around it.
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/refresh-site/scripts/build_site.py <build-folder> --out <build-folder>/dist
 ```
@@ -75,16 +79,17 @@ This writes `dist/artifact.html` (the preview) and `dist/handoff/` (the full doc
 ### 7. Gates (all must pass)
 1. `no-ai-slop` in Gate mode on every line of copy, plus `python3 ${CLAUDE_PLUGIN_ROOT}/skills/no-ai-slop/slop_lint.py <file>`.
 2. No em or en dashes: `grep -cP '\xe2\x80[\x93\x94]'` prints 0 on every output file.
-3. `visual-verify` at 390 and 1440, light and dark, plus reduced motion and touch emulation, and one hover state per micro-interaction. Open and critique every screenshot. Also screenshot the open nav panel, a finder search that matches and one that does not, and the mobile menu.
-4. `agent-ready`: `agent_audit.py dist/handoff` shows 0 FAIL.
-5. Click depth: `click_depth.py dist/handoff/index.html --catalog catalog.json` shows every list linked.
-6. The Paddle bar: would a top product site ship this? If not, fix it first.
+3. Signature hero: journey screenshots at 0, 30, 60 and 100 percent, and the pin and scroll-back test from `signature-hero` (the opening scene is clean after scrolling back).
+4. `visual-verify` at 390 and 1440, light and dark, plus reduced motion and touch emulation, and one hover state per micro-interaction. Open and critique every screenshot. Also screenshot the open nav panel, a finder search that matches and one that does not, and the mobile menu.
+5. `agent-ready`: `agent_audit.py dist/handoff` shows 0 FAIL.
+6. Click depth: `click_depth.py dist/handoff/index.html --catalog catalog.json` shows every list linked.
+7. The Paddle bar: would a top product site ship this? If not, fix it first.
 
 ### 8. Preview and ship
 Publish `dist/artifact.html` as an Artifact for review. Then run `ship-page` for the dev handoff package and the Cloudflare checks.
 
 ### 9. Close the loop
-Ask the owner for critique. Turn each durable note into a rule in this skill or in `site-intake`, and propose the edit; do not just fix the one page.
+Ask the owner for critique, the hero and first scroll first. Log the concept and the reaction in `signature-hero/references/innovation-log.md`. Turn each durable note into a rule in this skill or in `site-intake`, and propose the edit; do not just fix the one page.
 
 ## Lessons from the EDG run
 - Logo colours locked the palette: logo red became the "problem" pencil and logo green the "verified" mark.

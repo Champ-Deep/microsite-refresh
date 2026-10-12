@@ -1,6 +1,6 @@
 ---
 name: site-intake
-description: Collects everything a microsite refresh needs before design starts (logo, brand colours, contact details, confirmed claims, full list catalog, audience, traffic) and writes site.json, catalog.json and brief.md. Use at the start of any microsite refresh, or when someone says "set up a new site for refresh", "intake for <domain>", "add <domain> to the refresh pipeline".
+description: Collects everything a microsite refresh needs before design starts (logo, brand colours, contact details, confirmed claims, full list catalog, audience, traffic) and writes site.json, catalog.json and brief.md. Use at the start of any microsite refresh, or when someone says "set up a new site for refresh", "intake for this domain", "add this domain to the refresh pipeline".
 ---
 
 # Site intake
