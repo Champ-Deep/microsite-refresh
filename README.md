@@ -73,6 +73,8 @@ python3 $R/skills/visual-verify/scripts/shoot.py ./my-site/dist/handoff/index.ht
 
 A site folder holds `template.html`, `finder.js`, `extra.css` (copied from `skills/refresh-site/templates/verify-skin/`), plus `site.json`, `catalog.json` and `logo.png`. See `skills/refresh-site/examples/emaildatagroup/`. The build stops if copy from the EDG example is still on another site's page; `refresh-site/SKILL.md` lists every string to rewrite.
 
+**Corporate or multi-venture homepage:** use the opt-in `skills/venture-story/` template (motion-led, four ecosystems, filterable venture directory). Build: `python3 $R/skills/venture-story/build.py $R/skills/venture-story/examples/champions --out ./dist`. See its `SKILL.md`.
+
 ## The rules every refreshed page meets
 
 1. Any list on the site is reachable within two clicks of the home page, three at most. Search with no match offers a custom list.
