@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{NAME}} | {{TAGLINE}}</title>
+<meta name="description" content="{{META_DESCRIPTION}}">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FFFFFF">
+<noscript><style>.menu-toggle,.filters{display:none!important}</style></noscript>
+<link rel="alternate" type="text/markdown" href="index.md">
+<style>{{FONT_CSS}}
+{{KIT_CSS}}
+{{PAGE_CSS}}</style>
+</head>
+<body data-mk-progress>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" id="top">
+  <a class="brand" href="#top" aria-label="{{NAME}} home"><img src="{{LOGO}}" alt="{{NAME}}" width="150" height="94"></a>
+  <nav class="desktop-nav" aria-label="Main navigation"><a href="#ecosystems" data-mk="swap">Our ecosystems</a><a href="#portfolio" data-mk="swap">The ventures</a><a href="#reach" data-mk="swap">Our reach</a></nav>
+  <a class="button nav-cta" href="mailto:{{EMAIL}}">{{PRIMARY}} <span aria-hidden="true">↗</span></a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open navigation"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden><a href="#ecosystems">Our ecosystems</a><a href="#portfolio">The ventures</a><a href="#reach">Our reach</a><a href="mailto:{{EMAIL}}">{{PRIMARY}}</a></nav>
+</header>
+<main id="main">
+<section class="hero section-wrap" aria-labelledby="hero-title">
+  <div class="hero-copy"><p class="eyebrow"><span class="tiny-square"></span>{{HERO_EYEBROW}}</p>
+    <h1 id="hero-title">{{HERO_TITLE}}<br><span>{{HERO_EMPHASIS}}</span></h1>
+    <p class="lede">{{HERO_DESCRIPTION}}</p>
+    <div class="actions"><a class="button" href="mailto:{{EMAIL}}" data-mk="magnetic">{{PRIMARY}} <span aria-hidden="true">↗</span></a><a class="text-link" href="#ecosystems" data-mk="underline">{{SECONDARY}} <span aria-hidden="true">↓</span></a></div>
+    <div class="hero-caption"><span class="scroll-mark" aria-hidden="true"><i></i></span><span>Scroll to see how it connects</span></div>
+  </div>
+  <div class="hero-art" aria-label="Four connected ecosystems"><div class="art-topline"><span>{{SCENE_LABEL}}</span><span>{{VENTURE_COUNT}} ventures</span></div>
+    {{HERO_SVG}}
+    <div class="art-bottomline"><span>{{SCENE_NOTE}}</span><span aria-hidden="true">{{GROUP_COUNT}} layers</span></div>
+  </div>
+  <div class="hero-foot"><span>{{TAGLINE}}</span><div><b>{{VENTURE_COUNT}}</b> ventures <i></i><b>{{GROUP_COUNT}}</b> ecosystems</div><a href="#portfolio" aria-label="Meet the ventures">Meet the ventures <span aria-hidden="true">↗</span></a></div>
+</section>
+<section class="statement section-wrap" id="connection">
+  <div class="section-index"><span>01 / THE CONNECTION</span><span class="index-line"></span></div>
+  <p class="eyebrow">{{INTRO_EYEBROW}}</p>
+  <h2 class="statement-title">{{INTRO_TITLE}}</h2>
+  <p class="statement-body">{{INTRO_DESCRIPTION}}</p>
+  <svg class="connection-line" viewBox="0 0 1160 90" preserveAspectRatio="none" aria-hidden="true"><path class="line-base" d="M0 20H320Q360 20 390 48T470 70H690Q730 70 770 45T850 20H1160"/><path class="line-draw" d="M0 20H320Q360 20 390 48T470 70H690Q730 70 770 45T850 20H1160"/><circle cx="580" cy="70" r="7"/></svg>
+</section>
+<section class="ecosystems" id="ecosystems" aria-labelledby="ecosystem-title">
+  <div class="section-wrap ecosystem-heading"><div><p class="eyebrow">02 / OUR ECOSYSTEMS</p><h2 id="ecosystem-title">{{CHAPTERS_TITLE}}</h2></div><p>{{CHAPTERS_INTRO}}</p></div>
+  <div class="chapter-stage section-wrap">
+    <div class="chapter-top"><span>{{NAME}}</span><span class="chapter-counter">01 / 04</span><a href="#portfolio">Skip to all ventures <span aria-hidden="true">↓</span></a></div>
+    <div class="chapter-stack">{{CHAPTERS}}</div>
+    <nav class="chapter-nav" aria-label="Ecosystem chapters">{{CHAPTER_NAV}}</nav>
+    <div class="chapter-progress" aria-hidden="true"><i></i></div>
+  </div>
+</section>
+<section id="reach" class="reach" aria-labelledby="reach-title"><div class="section-wrap">
+  <div class="reach-top"><p class="eyebrow">03 / {{PROOF_EYEBROW}}</p><span class="reach-mark" aria-hidden="true">↗</span></div>
+  <div class="reach-heading"><h2 id="reach-title">{{PROOF_TITLE}}</h2><p>{{PROOF_DESCRIPTION}}</p></div>
+  <div class="metrics">{{METRICS}}</div>
+  <div class="reach-foot"><p>{{PROOF_SOURCE}}</p><a class="text-link" href="{{PROOF_URL}}" data-mk="underline">{{PROOF_LINK}} <span aria-hidden="true">↗</span></a></div>
+</div></section>
+<section id="portfolio" class="portfolio section-wrap" aria-labelledby="portfolio-title">
+  <div class="section-index"><span>04 / THE PORTFOLIO</span><span class="index-line"></span></div>
+  <div class="portfolio-heading"><div><p class="eyebrow">{{DIRECTORY_EYEBROW}}</p><h2 id="portfolio-title">{{DIRECTORY_TITLE}}</h2></div><p>{{DIRECTORY_DESCRIPTION}}</p></div>
+  <div class="filters" role="group" aria-label="{{FILTER_LABEL}}"><button type="button" data-filter="all" aria-pressed="true">{{ALL_LABEL}} <span>{{VENTURE_COUNT}}</span></button>{{FILTERS}}</div>
+  <p class="filter-status" role="status" aria-live="polite">Showing {{VENTURE_COUNT}} ventures</p>
+  <div class="venture-list">{{VENTURES}}</div>
+</section>
+<section class="closing" id="contact"><div class="section-wrap">
+  <div class="closing-top"><p class="eyebrow">05 / {{CONTACT_EYEBROW}}</p></div>
+  <h2>{{CONTACT_TITLE}}</h2><div class="closing-bottom"><p>{{CONTACT_DESCRIPTION}}</p><a class="button" href="mailto:{{EMAIL}}" data-mk="magnetic">{{CONTACT_PRIMARY}} <span aria-hidden="true">↗</span></a></div>
+  <div class="cities">{{CITIES}}</div>
+</div></section>
+</main>
+<footer class="section-wrap"><a class="brand" href="#top" aria-label="Back to top"><img src="{{LOGO}}" alt="{{NAME}}" width="150" height="94" loading="lazy"></a><p>{{TAGLINE}}</p><a href="mailto:{{EMAIL}}" data-mk="underline">{{EMAIL}}</a><span class="concept-note">Design concept · Not published</span></footer>
+<script>{{GSAP}}</script>
+<script>{{SCROLLTRIGGER}}</script>
+<script>{{KIT_JS}}</script>
+<script>{{PAGE_JS}}</script>
+</body></html>

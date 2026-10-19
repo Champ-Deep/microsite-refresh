@@ -1,0 +1,40 @@
+{
+  "name": "Champions Group",
+  "domain": "https://www.championsgroup.com",
+  "email": "info@championsgroup.com",
+  "logo": "logo.png",
+  "accent": "#F26722",
+  "accentText": "#A83B08",
+  "tagline": "Empowering Innovation. Building Resilience.",
+  "hero": {"eyebrow": "A multi-venture innovation group", "title": "Ambition meets", "emphasis": "its ecosystem.", "description": "From the data behind a decision to the people who build a business. Twelve ventures, connected by the ambition to go further.", "primary": "Build with us", "secondary": "Explore the group", "sceneLabel": "The connected group", "sceneNote": "Four ecosystems. Shared ambition."},
+  "intro": {"eyebrow": "Different expertise. Shared ambition.", "title": "A business rarely grows in isolation.", "description": "It needs the right data. The right people. Room to build. We bring these capabilities together, across four complementary ecosystems."},
+  "chaptersTitle": "Four worlds.\nMore possibilities.",
+  "chaptersIntro": "Explore what each part of the group brings to the table.",
+  "groups": [
+    {"id": "data", "label": "Data & services", "short": "Data", "visual": "network", "title": "Find your next\nopportunity.", "description": "Business intelligence, cloud technology and communications. The foundations for reaching new markets and serving them well.", "footnote": "Lake B2B, SPAN Global Services, IP Momentum and Cirralogix.", "metric": {"value": "800M+", "label": "B2B contacts through Lake B2B"}, "ventures": [
+      {"name": "Lake B2B", "description": "B2B contact data, business intelligence and AI sales automation for enterprise teams.", "url": "https://www.lakeb2b.com/"},
+      {"name": "SPAN Global Services", "description": "Global data solutions for business teams working across markets.", "url": "https://www.spanglobalservices.com/"},
+      {"name": "IP Momentum", "description": "Business communications and VoIP services.", "url": "https://www.ipmomentum.in/"},
+      {"name": "Cirralogix", "description": "Cloud and technology solutions.", "url": null}
+    ]},
+    {"id": "founders", "label": "Champions ecosystem", "short": "Founders", "visual": "steps", "title": "Give ambition\na place to grow.", "description": "Startup acceleration, talent, analytics and community. Capabilities that help founders build the company around their idea.", "footnote": "From founder support to the recruit-to-workforce lifecycle.", "metric": {"value": "4", "label": "complementary ventures"}, "ventures": [
+      {"name": "Champions Accelerator", "description": "Founder support through digital marketing, fundraising and business development expertise.", "url": null},
+      {"name": "Champions Infometrics", "description": "Data intelligence and analytics.", "url": null},
+      {"name": "Champions Club", "description": "Community and networking.", "url": null},
+      {"name": "Recruit Champ", "description": "Recruitment and talent solutions across the hiring lifecycle.", "url": null}
+    ]},
+    {"id": "wellness", "label": "The .fit ecosystem", "short": "Wellbeing", "visual": "rings", "title": "Build a business.\nLive a fuller life.", "description": "Fitness, health and nutrition belong in the same conversation. Our .fit ecosystem brings these three areas into focus.", "footnote": "Three distinct platforms, centered on everyday wellbeing.", "metric": {"value": "3", "label": "areas of wellbeing"}, "ventures": [
+      {"name": "Champ.fit", "description": "Fitness and wellness platform.", "url": null},
+      {"name": "Health.fit", "description": "Health technology platform.", "url": null},
+      {"name": "Food.fit", "description": "Food and nutrition technology platform.", "url": null}
+    ]},
+    {"id": "infrastructure", "label": "Technology & experience", "short": "Places", "visual": "architecture", "title": "Turn possibility\ninto a place.", "description": "Technology infrastructure, real estate and physical experiences. InfraTech connects the systems we build with the places we inhabit.", "footnote": "Including Champions Lagoons and the Champions Ranch experience center.", "metric": {"value": "InfraTech", "label": "technology and experience"}, "ventures": [
+      {"name": "InfraTech", "description": "Technology infrastructure and large-scale real estate and experience development.", "url": null}
+    ]}
+  ],
+  "proof": {"url": "https://www.lakeb2b.com/", "link": "Explore Lake B2B", "eyebrow": "A foundation of scale", "title": "Built to work\nbeyond borders.", "description": "Lake B2B's data business brings global coverage and a long operating history to the group.", "metrics": [{"value": "800M+", "label": "B2B contacts", "note": "Lake B2B data assets"}, {"value": "189", "label": "Countries covered", "note": "Lake B2B coverage"}, {"value": "25+", "label": "Years in data", "note": "Lake B2B operating history"}], "source": "Lake B2B figures supplied in the Champions Group brand reference. Not group-wide customer or revenue metrics."},
+  "directory": {"eyebrow": "The people behind the possibilities", "title": "Meet the ventures.", "description": "Different specialisms. One group to build with.", "filterLabel": "Filter ventures by ecosystem", "allLabel": "All ventures", "action": "Visit website", "inquiry": "Ask about this venture"},
+  "contact": {"eyebrow": "Your next chapter", "title": "What could we\nbuild together?", "description": "Tell us where you want to go. We will connect you with the right team.", "primary": "Start a conversation", "cities": ["Singapore", "Bengaluru", "Tokyo", "Dubai", "London", "Emeryville", "Jiangmen"]},
+  "sources": ["https://www.championsgroup.com/", "Celsus/_config/org-map.md: 12 companies in four clusters", "Champions Group brand skill: Lake B2B 800M+ contacts, 189 countries, 25+ years", "Celsus/Atlas/Companies/: venture descriptions"],
+  "reviewNotes": ["Corporate design concept, not published.", "Portfolio follows the supplied vault org map. Confirm current trading names and public status before launch.", "No client logos, testimonials, headquarters claims or unverified address corrections carried forward.", "Venture URLs are limited to explicit public domains. Other actions route to the group's actual published email.", "Motion and chapter narrative are an original interpretation of the reference, not a pixel clone."]
+}
