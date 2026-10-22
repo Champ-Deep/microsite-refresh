@@ -1,0 +1,68 @@
+import importlib.util
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location('campaign_build', ROOT / 'build.py')
+assert spec is not None and spec.loader is not None
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+SOURCE = ROOT / 'examples/span-peo-eor'
+
+
+class BuildTests(unittest.TestCase):
+    def setUp(self):
+        self.site = json.loads((SOURCE / 'site.json').read_text())
+
+    def build(self, site=None):
+        with tempfile.TemporaryDirectory() as td:
+            src = Path(td) / 'src'
+            src.mkdir()
+            (src / 'logo.png').write_bytes((SOURCE / 'logo.png').read_bytes())
+            (src / 'site.json').write_text(json.dumps(site or self.site))
+            return module.build(src, Path(td) / 'out.html')
+
+    def test_example_builds_with_counts_and_no_placeholders(self):
+        text = self.build()
+        self.assertNotIn('{{', text)
+        self.assertNotIn('\u2014', text)
+        self.assertNotIn('\u2013', text)
+        for side in ('left', 'right'):
+            s = self.site['compare'][side]
+            self.assertIn(format(s['total'], ','), text)
+            other = s['total'] - sum(i['count'] for i in s['items'])
+            self.assertIn('<span>%s</span><b>%s</b>' % (s['otherLabel'], format(other, ',')), text)
+        self.assertEqual(text.count('class="row'), 16)
+        self.assertEqual(text.count('<span class="faq__n">'), 5)
+        self.assertIn('data:image/png;base64,', text)
+        self.assertIn('"deel": "Who Is On Deel? We Can Tell You."', text)
+
+    def test_bars_scale_to_half_width(self):
+        text = self.build()
+        self.assertIn('data-label="Insperity" style="--w:50.0%"', text)
+        self.assertIn('data-label="Deel" style="--w:50.0%"', text)
+
+    def test_escapes_markup(self):
+        site = json.loads(json.dumps(self.site))
+        site['hero']['eyebrow'] = '<script>alert(1)</script>'
+        text = self.build(site)
+        self.assertNotIn('<script>alert', text)
+        self.assertIn('&lt;script&gt;alert', text)
+
+    def test_rejects_dash_bad_url_and_overflowing_counts(self):
+        for mutate in [
+            lambda s: s['hero'].__setitem__('lede', 'a \u2014 b'),
+            lambda s: s['hero']['sources'][0].__setitem__('url', 'http://napeo.org'),
+            lambda s: s['compare']['left']['items'][0].__setitem__('count', 10 ** 9),
+            lambda s: s['faq']['items'].pop(),
+        ]:
+            site = json.loads(json.dumps(self.site))
+            mutate(site)
+            with self.assertRaises(ValueError):
+                self.build(site)
+
+
+if __name__ == '__main__':
+    unittest.main()

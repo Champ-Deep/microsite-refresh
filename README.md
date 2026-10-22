@@ -75,6 +75,8 @@ A site folder holds `template.html`, `finder.js`, `extra.css` (copied from `skil
 
 **Corporate or multi-venture homepage:** use the opt-in `skills/venture-story/` template (motion-led, four ecosystems, filterable venture directory). Build: `python3 $R/skills/venture-story/build.py $R/skills/venture-story/examples/champions --out ./dist`. See its `SKILL.md`.
 
+**Paid-campaign landing page (one offer, one form):** use the opt-in `skills/campaign-landing/` template (SPAN brand, headline variants per ad group, work-email gate, sweepable compare chart, cited sources, halftone wordmark footer). Build: `python3 $R/skills/campaign-landing/build.py $R/skills/campaign-landing/examples/span-peo-eor --out ./dist/peo-eor.html`. See its `SKILL.md`.
+
 ## The rules every refreshed page meets
 
 1. Any list on the site is reachable within two clicks of the home page, three at most. Search with no match offers a custom list.
