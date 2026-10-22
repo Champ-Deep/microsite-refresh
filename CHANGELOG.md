@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.5.1 (22 Oct 2026)
+- campaign-landing: platform section rebuilt as a provider market map (two regions sized by book, squarified tiles, pin and hover-to-compare strip that writes into the form). FAQ rebuilt as an objection rail with a visual answer per question (call openers, source trail, renewal window, scoped sample, roles). Tests cover tile shares and the visual contract.
+
 ## 0.5.0 (22 Oct 2026)
 - New: campaign-landing skill, a SPAN paid-campaign landing page built from site.json (example: PEO and EOR install base). Ports three 21st.dev components to vanilla CSS/JS: Compare, AI Sources, Halftone Wordmark Footer. Four-field form with a work-email gate, headline variants per ad group, answer-first FAQ grid, build tests.
 

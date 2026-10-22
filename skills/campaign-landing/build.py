@@ -73,6 +73,12 @@ def validate(site, source):
                 safe_url(item['href'], allow_tel=True)
     if len(site['faq']['items']) != 5:
         raise ValueError('faq.items needs exactly five entries (the sixth tile is the ask)')
+    for item in site['faq']['items']:
+        if item.get('visual') not in VISUALS:
+            raise ValueError('faq item needs a visual in ' + ', '.join(sorted(VISUALS)))
+    for key in ('idle', 'idleName', 'hint', 'share', 'rank', 'all', 'vs', 'of', 'rest', 'preview', 'pinned', 'contacts', 'cta'):
+        if key not in site['compare']['strip']:
+            raise ValueError('compare.strip.' + key + ' missing')
 
 
 def fav(domain):
@@ -91,19 +97,57 @@ def sources(id_, items, label):
             '<div class="srcs__list" id="%s-list"><ul>%s</ul></div></div>') % (id_, id_, stack, E(label), id_, rows)
 
 
-def compare_rows(side):
-    items = [(i['name'], int(i['count']), False) for i in side['items']]
-    other = int(side['total']) - sum(c for _, c, _ in items)
-    if other > 0:
-        items.append((side['otherLabel'], other, True))
-    mx = max(c for _, c, _ in items)
-    out = ''
-    for name, count, is_all in items:
-        out += ('        <button type="button" class="row%s" data-seg="%s" data-label="%s" style="--w:%s%%">'
-                '<span>%s</span><b>%s</b><i></i></button>\n') % (
-            ' row--all' if is_all else '', E(side['segment']), E(name),
-            round(count / mx * 50, 2), E(name), format(count, ','))
+def tiles(site):
+    """One entry per provider across both books, with share and rank precomputed for the strip."""
+    grand = sum(int(site['compare'][k]['total']) for k in ('left', 'right'))
+    out = []
+    for key, side_id in (('left', 'peo'), ('right', 'eor')):
+        side = site['compare'][key]
+        total = int(side['total'])
+        items = sorted(((i['name'], int(i['count']), False) for i in side['items']), key=lambda t: -t[1])
+        other = total - sum(c for _, c, _ in items)
+        if other > 0:
+            items.append((side['otherLabel'], other, True))
+        for rank, (name, count, is_all) in enumerate(items, 1):
+            out.append({'name': name, 'count': count, 'all': is_all, 'side': side_id, 'sideName': side['name'],
+                        'seg': side['segment'], 'rank': rank, 'n': len([i for i in items if not i[2]]),
+                        'share': round(count / total * 100), 'shareAll': round(count / grand * 100)})
     return out
+
+
+VISUALS = {
+    'calls': '<div class="calls"><div class="call"><em>{a}</em>{at}</div><div class="call call--on"><em>{b}</em>{bt}</div></div>',
+    'sources': '<div class="trail"><ul>{chips}</ul><svg viewBox="0 0 110 230" aria-hidden="true">{paths}</svg>'
+               '<div class="rec"><b>{rec}</b><i></i><i></i><i></i><div class="law">{law}</div></div></div>',
+    'renewal': '<div class="ren"><div class="ren__bar">{bar}</div><div class="ren__lab">{lab}</div>'
+               '<div class="ren__keys"><span><i></i>{k1}</span><span><i class="win"></i>{k2}</span><span><i class="end"></i>{k3}</span></div>'
+               '<span class="ren__pin">{pin}</span></div>',
+    'sample': '<div class="samp"><div class="samp__card"><b>{card}</b><i></i><i></i><i></i><i></i><span class="stamp">{stamp}</span></div><ul>{ticks}</ul></div>',
+    'roles': '<div class="roles"><div class="roles__r">{roles}</div><div class="roles__at">{at}</div><div class="roles__c">{cos}</div></div>',
+}
+
+
+def visual(item):
+    kind, d = item['visual'], item.get('visualData', {})
+    if kind == 'calls':
+        return VISUALS[kind].format(a=E(d['beforeLabel']), at=E(d['before']), b=E(d['afterLabel']),
+                                    bt=re.sub(r'\*(.+?)\*', r'<mark>\1</mark>', E(d['after'])))
+    if kind == 'sources':
+        n = len(d['sources'])
+        paths = ''.join('<path d="M0 %d C 55 %d, 55 115, 110 115"/>' % (y, y) for y in
+                        (round(18 + k * (194 / max(n - 1, 1))) for k in range(n)))
+        return VISUALS[kind].format(chips=''.join('<li>%s</li>' % E(x) for x in d['sources']), paths=paths,
+                                    rec=E(d['record']), law=''.join('<span>%s</span>' % E(x) for x in d['laws']))
+    if kind == 'renewal':
+        bar = ''.join('<i class="%s"></i>' % ('end' if m == 12 else 'win' if m in d['window'] else '') for m in range(1, 13))
+        lab = ''.join('<span>%d</span>' % m for m in range(1, 13))
+        return VISUALS[kind].format(bar=bar, lab=lab, k1=E(d['keys'][0]), k2=E(d['keys'][1]), k3=E(d['keys'][2]), pin=E(d['pin']))
+    if kind == 'sample':
+        return VISUALS[kind].format(card=E(d['card']), stamp=E(d['stamp']), ticks=''.join('<li>%s</li>' % E(x) for x in d['ticks']))
+    if kind == 'roles':
+        return VISUALS[kind].format(roles=''.join('<span>%s</span>' % E(x) for x in d['roles']), at=E(d['at']),
+                                    cos=''.join('<span>%s</span>' % E(x) for x in d['companies']))
+    raise ValueError('Unknown faq visual ' + repr(kind))
 
 
 def render(site, source):
@@ -117,11 +161,14 @@ def render(site, source):
             E(r['label']), E(r['value']),
             '<span class="ok">%s</span>' % E(d['verifiedLabel']) if r.get('verified') else '') for r in col['rows'])
         cols += '          <div class="dcol">\n            <h3>%s</h3>\n%s          </div>\n' % (E(col['title']), rows)
-    faq = ''
+    tabs = panes = ''
     for n, item in enumerate(site['faq']['items'], 1):
-        faq += ('        <article>\n          <span class="faq__n">%02d</span>\n          <h3>%s</h3>\n'
-                '          <p class="faq__lead">%s</p>\n          <p>%s</p>\n        </article>\n') % (
-            n, E(item['q']), E(item['lead']), E(item['detail']))
+        tabs += ('          <button type="button" role="tab" id="tab%d" aria-controls="pane%d" aria-selected="false">'
+                 '<i>%02d</i><span>%s</span></button>\n') % (n, n, n, E(item['q']))
+        panes += ('          <div class="pane2" id="pane%d" role="tabpanel" aria-labelledby="tab%d" hidden>\n'
+                  '            <div class="vis">%s</div>\n            <div class="ans"><h3>%s</h3>\n'
+                  '            <p class="faq__lead">%s</p>\n            <p>%s</p></div>\n          </div>\n') % (
+            n, n, visual(item), E(item['q']), E(item['lead']), E(item['detail']))
     fcols = ''
     for col in site['footer']['columns']:
         lis = ''.join('<li>%s</li>' % (
@@ -155,15 +202,16 @@ def render(site, source):
         'clients.label': E(site['clients']['label']),
         'clients.names': '    ' + ''.join('<span>%s</span>' % E(n) for n in site['clients']['names']) + '\n',
         'compare.title': E(site['compare']['title']), 'compare.sub': E(site['compare']['sub']),
-        'compare.rangeLabel': E(site['compare']['rangeLabel']), 'compare.rangeAria': E(site['compare']['rangeAria']),
         'compare.note': E(site['compare']['note']),
+        'compare.tilesJson': json.dumps(tiles(site)), 'compare.stripJson': json.dumps(site['compare']['strip']),
+        **{'compare.strip.' + k: E(x) for k, x in site['compare']['strip'].items()},
         'account.title': E(site['account']['title']), 'account.lede': E(site['account']['lede']),
         'account.groups': ''.join('          <li>%s</li>\n' % E(g) for g in site['account']['groups']),
         'account.fit': E(site['account']['fit']),
         'account.sources': sources('sources2', site['account']['sources'], site['account']['sourcesLabel']),
         'dossier.title': E(d['title']), 'dossier.tag': E(d['tag']), 'dossier.providerLabel': E(d['providerLabel']),
         'dossier.provider': E(d['provider']), 'dossier.columns': cols, 'dossier.footer': E(d['footer']),
-        'faq.title': E(site['faq']['title']), 'faq.sub': E(site['faq']['sub']), 'faq.items': faq,
+        'faq.title': E(site['faq']['title']), 'faq.sub': E(site['faq']['sub']), 'faq.tabs': tabs, 'faq.panes': panes,
         'faq.ask.title': E(site['faq']['ask']['title']), 'faq.ask.text': E(site['faq']['ask']['text']),
         'faq.ask.button': E(site['faq']['ask']['button']),
         'closer.title': E(site['closer']['title']), 'closer.text': E(site['closer']['text']),
@@ -176,8 +224,8 @@ def render(site, source):
     for side in ('left', 'right'):
         s = site['compare'][side]
         v['compare.%s.name' % side] = E(s['name'])
-        v['compare.%s.total' % side] = format(int(s['total']), ',')
-        v['compare.%s.rows' % side] = compare_rows(s)
+        v['compare.%s.total' % side] = str(int(s['total']))
+        v['compare.%s.totalText' % side] = format(int(s['total']), ',')
     template = (ROOT / 'template.html').read_text(encoding='utf-8')
     out = re.sub(r'\{\{([a-zA-Z.]+)\}\}', lambda m: v[m.group(1)], template)
     if DASH.search(out):

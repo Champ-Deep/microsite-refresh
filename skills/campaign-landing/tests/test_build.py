@@ -33,16 +33,22 @@ class BuildTests(unittest.TestCase):
             s = self.site['compare'][side]
             self.assertIn(format(s['total'], ','), text)
             other = s['total'] - sum(i['count'] for i in s['items'])
-            self.assertIn('<span>%s</span><b>%s</b>' % (s['otherLabel'], format(other, ',')), text)
-        self.assertEqual(text.count('class="row'), 16)
-        self.assertEqual(text.count('<span class="faq__n">'), 5)
+            self.assertIn('"name": "%s", "count": %d, "all": true' % (s['otherLabel'], other), text)
+        tiles = module.tiles(self.site)
+        self.assertEqual(len(tiles), 16)
+        self.assertEqual(sum(t['count'] for t in tiles if t['side'] == 'peo'), self.site['compare']['left']['total'])
+        self.assertEqual([t['rank'] for t in tiles if t['side'] == 'eor'], list(range(1, 9)))
+        self.assertEqual(text.count('role="tab"'), 5)
+        self.assertEqual(text.count('class="pane2"'), 5)
         self.assertIn('data:image/png;base64,', text)
         self.assertIn('"deel": "Who Is On Deel? We Can Tell You."', text)
 
-    def test_bars_scale_to_half_width(self):
-        text = self.build()
-        self.assertIn('data-label="Insperity" style="--w:50.0%"', text)
-        self.assertIn('data-label="Deel" style="--w:50.0%"', text)
+    def test_tile_shares(self):
+        by = {t['name']: t for t in module.tiles(self.site)}
+        self.assertEqual(by['Insperity']['share'], 26)
+        self.assertEqual(by['Deel']['share'], 50)
+        self.assertEqual(by['All other PEOs']['count'], 25846)
+        self.assertTrue(by['All other PEOs']['all'])
 
     def test_escapes_markup(self):
         site = json.loads(json.dumps(self.site))
@@ -57,6 +63,7 @@ class BuildTests(unittest.TestCase):
             lambda s: s['hero']['sources'][0].__setitem__('url', 'http://napeo.org'),
             lambda s: s['compare']['left']['items'][0].__setitem__('count', 10 ** 9),
             lambda s: s['faq']['items'].pop(),
+            lambda s: s['faq']['items'][0].__setitem__('visual', 'nope'),
         ]:
             site = json.loads(json.dumps(self.site))
             mutate(site)
