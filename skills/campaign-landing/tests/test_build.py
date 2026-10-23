@@ -38,7 +38,7 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(len(tiles), 16)
         self.assertEqual(sum(t['count'] for t in tiles if t['side'] == 'peo'), self.site['compare']['left']['total'])
         self.assertEqual([t['rank'] for t in tiles if t['side'] == 'eor'], list(range(1, 9)))
-        self.assertIn('id="board" role="group"', text)
+        self.assertEqual(text.count('class="board" data-side='), 2)
         self.assertIn('"rank": "#{rank} of {n}"', text)
         self.assertEqual(text.count('role="tab"'), 5)
         self.assertEqual(text.count('class="pane2"'), 5)

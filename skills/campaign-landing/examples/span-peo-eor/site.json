@@ -102,7 +102,7 @@
   },
   "compare": {
     "title": "Who Is On Which Platform",
-    "sub": "Every provider's book as a tile, sized by its share. Click one to pin it and every other tile shows the ratio. Drag tiles to put two rivals side by side.",
+    "sub": "Each book as its own board, every provider a tile sized by its share. Click one to pin it and every other tile shows the ratio. Drag tiles to put two rivals side by side.",
     "note": "Tile size follows each provider's share of its own book. All provider names are trademarks of their respective owners. Span Global Services is not affiliated with, endorsed by or sponsored by any of them.",
     "left": {
       "name": "PEO platforms",

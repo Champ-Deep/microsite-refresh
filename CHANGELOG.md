@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.1 (23 Oct 2026)
+- campaign-landing: one bento board per book, PEO beside EOR, equal heights at 4 columns; hero eyebrow promoted to a Montserrat display line (Gary's note).
+
 ## 0.6.0 (23 Oct 2026)
 - campaign-landing: platform section is now a bento board, a vanilla port of the 21st.dev Draggable Widget Grid used on deependhq. Tiles sized by share tier, drag to reorder (touch press and hold, Alt plus arrows), click to pin with a ratio chip on every other tile, `?hl=` pins on load. Transform-only motion, contrast-capped colour ramps, 0 audit fails at 1440 and 390.
 
