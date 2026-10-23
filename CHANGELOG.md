@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.0 (23 Oct 2026)
+- campaign-landing: platform section is now a bento board, a vanilla port of the 21st.dev Draggable Widget Grid used on deependhq. Tiles sized by share tier, drag to reorder (touch press and hold, Alt plus arrows), click to pin with a ratio chip on every other tile, `?hl=` pins on load. Transform-only motion, contrast-capped colour ramps, 0 audit fails at 1440 and 390.
+
 ## 0.5.1 (22 Oct 2026)
 - campaign-landing: platform section rebuilt as a provider market map (two regions sized by book, squarified tiles, pin and hover-to-compare strip that writes into the form). FAQ rebuilt as an objection rail with a visual answer per question (call openers, source trail, renewal window, scoped sample, roles). Tests cover tile shares and the visual contract.
 

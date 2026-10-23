@@ -144,26 +144,51 @@ p{margin:0 0 var(--s2)}
 .srcs__list b{display:block;font-size:.9rem;font-weight:600;line-height:1.35}
 .srcs__list small{display:block;font-size:.8rem;color:var(--dim);line-height:1.45;margin-top:2px}
 
-/* Market map. Two regions sized by book (PEO vs EOR), each a squarified treemap of its providers.
-   Click pins a provider and the strip shows count, share, rank. Hover another tile for the ratio. */
-.map{position:relative;display:flex;gap:6px;height:520px;border-radius:var(--r-lg);overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 16px 40px rgba(15,43,60,.08);padding:6px}
-.region{position:relative;flex:var(--share) 1 0;min-width:0;border-radius:12px;overflow:hidden}
-.region__h{position:absolute;left:0;right:0;top:0;height:40px;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 14px;pointer-events:none;color:#fff;background:var(--navy)}
-.region__h b{font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:700}
-.region__h span{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:800;color:var(--teal)}
-.tile{position:absolute;margin:0;padding:10px 12px;border:0;border-radius:8px;overflow:hidden;text-align:left;font-family:inherit;color:#fff;cursor:pointer;box-shadow:inset 0 0 0 2px #fff;
-  background:color-mix(in srgb,var(--green) calc(35% + var(--t) * 65%),var(--navy));transition:filter .18s var(--ease),transform .18s var(--ease)}
-.region--eor .tile{background:color-mix(in srgb,#00A383 calc(25% + var(--t) * 45%),var(--navy))}
-.tile--all,.region--eor .tile--all{background:color-mix(in srgb,var(--muted) 55%,var(--navy))}
-.tile:hover,.tile:focus-visible{filter:brightness(1.12);z-index:3}
-.tile.pin{box-shadow:inset 0 0 0 4px var(--teal),inset 0 0 0 7px #fff;z-index:4}
-.tile span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:.84rem;font-weight:600;line-height:1.2;overflow:hidden}
-.tile.noc span{-webkit-line-clamp:1}
-.tile b{display:block;font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:800;margin-top:2px;white-space:nowrap}
-.tile.s span{font-size:.72rem} .tile.s b{font-size:.85rem}
-.tile.xs{padding:0} .tile.xs span{display:none} .tile.xs b{display:none}
-i.tile{display:block;cursor:default} /* too small to tap; still counted, still named in the title */
-.tile.noc b{display:none}
+/* Bento. Vanilla port of the 21st.dev Draggable Widget Grid used on deependhq (THIRD_PARTY.md).
+   One board for both books. Tile size follows share of its own book, colour follows the book.
+   Drag to reorder (press and hold on touch, Alt plus arrows on a keyboard). Click pins a provider and
+   every other tile shows its ratio to the pinned one; the strip below carries count, share, rank and the CTA. */
+.bento__head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.bento__totals{display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.bento__totals li{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 12px 0 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.85rem;font-weight:600;color:var(--navy)}
+.bento__totals i{width:12px;height:12px;border-radius:3px;background:var(--green)} .bento__totals li.t i{background:#00A383} .bento__totals li.g i{background:color-mix(in srgb,var(--muted) 55%,var(--navy))}
+.bento__totals b{font-family:'Montserrat',sans-serif;font-weight:800}
+.bento__tools{display:flex;align-items:center;gap:12px;min-height:44px}
+.bento__tools p{margin:0;font-size:.85rem;color:var(--muted)}
+.bento__reset{min-height:40px;padding:0 14px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--navy);font:600 .82rem 'Inter',sans-serif;cursor:pointer}
+.bento__reset[hidden]{display:none}
+.board{position:relative;min-width:0;touch-action:pan-y pinch-zoom;--rowh:150px;--gap:12px}
+.wg{position:absolute;margin:0;padding:0;border:0;border-radius:12px;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;outline:0;
+  left:0;top:0;box-shadow:0 1px 2px rgba(0,0,0,.12);transition:transform .2s var(--ease),box-shadow .12s;will-change:transform}
+.wg:focus-visible{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--teal)}
+.wg.raised{z-index:10}
+.wg.held{cursor:grabbing;z-index:20;transition:box-shadow .12s;box-shadow:0 28px 60px -16px rgba(15,43,60,.45),0 10px 24px -8px rgba(15,43,60,.3)}
+.wg.landed{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--teal)}
+.wg.holding .wg__card{transform:scale(.985);transition:transform .12s var(--ease)}
+.wg__card{position:relative;display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding:14px 16px;border-radius:12px;color:#fff;overflow:hidden;
+  background:color-mix(in srgb,var(--green) calc(55% + var(--t) * 45%),var(--navy))}
+.wg[data-side=eor] .wg__card{background:color-mix(in srgb,#00A383 calc(45% + var(--t) * 20%),var(--navy))}
+.wg[data-all] .wg__card{background:color-mix(in srgb,var(--muted) 55%,var(--navy))}
+.wg.pin .wg__card{box-shadow:inset 0 0 0 3px var(--teal),inset 0 0 0 6px #fff}
+.wg__top{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:22px}
+.wg__seg{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.9)}
+.wg__rank{font-size:.74rem;font-weight:600;color:rgba(255,255,255,.9);white-space:nowrap}
+.wg__pin,.wg__vs{display:none;padding:3px 9px;border-radius:999px;font-family:'Montserrat',sans-serif;font-size:.7rem;font-weight:800;white-space:nowrap}
+.wg__pin{background:var(--teal);color:#fff;letter-spacing:.06em;text-transform:uppercase}
+.wg__vs{background:#fff;color:var(--navy);font-size:.78rem}
+.wg.pin .wg__rank,.board.cmp .wg:not(.pin) .wg__rank{display:none}
+.wg.pin .wg__pin{display:inline-block} .board.cmp .wg:not(.pin) .wg__vs{display:inline-block}
+.wg__name{flex-shrink:0;font-size:.92rem;font-weight:600;line-height:1.2;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wg__n{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-top:auto;white-space:nowrap}
+.wg[data-size=wide] .wg__n{font-size:1.8rem}
+.wg[data-size=lg] .wg__n{font-size:clamp(2.4rem,4vw,3.4rem);margin-top:6px} .wg[data-size=lg] .wg__name{font-size:1.15rem} .wg[data-size=lg] .wg__bar{margin-top:auto}
+.wg__all{display:none;font-size:.82rem;font-weight:600;color:#fff;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.25)} .wg[data-size=lg] .wg__all{display:block}
+.wg__bar,.wg__share{display:none}
+.wg__bar{height:6px;border-radius:3px;background:rgba(255,255,255,.22);margin-top:10px;overflow:hidden} .wg__bar i{display:block;height:100%;width:var(--w);background:#fff;border-radius:3px}
+.wg__share{font-size:.78rem;color:rgba(255,255,255,.9);margin-top:6px}
+.wg[data-size=wide] .wg__bar,.wg[data-size=lg] .wg__bar,.wg[data-size=wide] .wg__share,.wg[data-size=lg] .wg__share{display:block}
+.board.static .wg{cursor:pointer;transition:none}
+@media (prefers-reduced-motion:reduce){.wg{transition:none}}
 .strip{display:grid;grid-template-columns:1.2fr repeat(3,minmax(0,.7fr)) auto;gap:18px;align-items:center;margin-top:16px;padding:18px 24px;border-radius:var(--r-lg);background:var(--navy);color:#fff;min-height:96px}
 .strip__who em{display:block;font-style:normal;font-size:.78rem;color:rgba(255,255,255,.62);letter-spacing:.04em;text-transform:uppercase}
 .strip__who b{display:block;font-family:'Montserrat',sans-serif;font-size:1.45rem;font-weight:800;line-height:1.15;letter-spacing:-.02em}
@@ -332,10 +357,10 @@ i.tile{display:block;cursor:default} /* too small to tap; still counted, still n
   .form{padding:22px 18px}
   .consent input{width:44px;height:44px;margin-top:-8px}
   .sticky{display:block}
-  .map{flex-direction:column;height:640px}
-  .region{flex-basis:0}
-  .tile{padding:7px 9px}
-  .strip{padding:16px 18px}
+  .board{--rowh:128px;--gap:10px}
+  .wg__card{padding:11px 12px} .wg__name{margin-top:4px;font-size:.84rem} .wg__n{font-size:1.2rem} .wg__bar{display:none !important} .wg__share{margin-top:4px}
+  .wg[data-size=wide] .wg__n{font-size:1.45rem} .wg[data-size=lg] .wg__n{font-size:2rem}
+  .strip{padding:16px 18px} .stat b i{display:block;margin-left:0}
   .calls{grid-template-columns:1fr}
   .trail{grid-template-columns:1fr;gap:12px;justify-items:stretch} .trail svg{display:none} .trail li{white-space:normal;text-align:center} .rec{min-width:0}
   .vis{padding:22px 18px}
@@ -460,13 +485,16 @@ i.tile{display:block;cursor:default} /* too small to tap; still counted, still n
       <p>{{compare.sub}}</p>
     </div>
 
-    <div class="map rv" id="map" aria-label="{{compare.title}}">
-      <div class="region region--peo" id="regPeo" style="--share:{{compare.left.total}}">
-        <div class="region__h"><b>{{compare.left.name}}</b><span>{{compare.left.totalText}}</span></div>
+    <div class="bento rv">
+      <div class="bento__head">
+        <ul class="bento__totals" aria-label="{{compare.title}}">
+          <li><i></i>{{compare.left.name}} <b>{{compare.left.totalText}}</b></li>
+          <li class="t"><i></i>{{compare.right.name}} <b>{{compare.right.totalText}}</b></li>
+          <li class="g"><i></i>{{compare.bento.tailLabel}}</li>
+        </ul>
+        <div class="bento__tools"><p id="bentoHint">{{compare.bento.hint}}</p><button type="button" class="bento__reset" id="bentoReset" hidden>{{compare.bento.reset}}</button></div>
       </div>
-      <div class="region region--eor" id="regEor" style="--share:{{compare.right.total}}">
-        <div class="region__h"><b>{{compare.right.name}}</b><span>{{compare.right.totalText}}</span></div>
-      </div>
+      <div class="board" id="board" role="group" aria-label="{{compare.title}}" aria-describedby="bentoHint"></div>
     </div>
     <div class="strip rv" id="strip" aria-live="polite">
       <div class="strip__who"><em id="stripEm">{{compare.strip.idle}}</em><b id="stripName">{{compare.strip.idleName}}</b></div>
@@ -587,7 +615,7 @@ i.tile{display:block;cursor:default} /* too small to tap; still counted, still n
   syncProvider();
 
   /* Ledger rows write into the form */
-  function choose(seg, label, isAll){
+  function choose_(seg, label, isAll){
     if(isAll){
       sel.value = seg;
     } else {
@@ -612,63 +640,228 @@ i.tile{display:block;cursor:default} /* too small to tap; still counted, still n
     });
   });
 
-  /* ---- Market map: squarified treemap per region, pin on click, ratio on hover ---- */
+  /* ---- Bento. Vanilla port of the 21st.dev Draggable Widget Grid (deependhq island). ---- */
   var TILES = {{compare.tilesJson}};
   var STRIP = {{compare.stripJson}};
+  var BENTO = {{compare.bentoJson}};
   var fmt = function(n){ return n.toLocaleString("en-US"); };
   var pinned = null;
+  var board = document.getElementById("board");
+  var reduced = (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) || /[?&]static=1/.test(location.search);
+  var SPANS = { sm:{w:1,h:1}, wide:{w:2,h:1}, tall:{w:1,h:2}, lg:{w:2,h:2} };
+  var initial = TILES.map(function(t, i){ return i; }).sort(function(a, b){ return TILES[b].count - TILES[a].count; });
+  var order = initial.slice(), cols = 0, unit = 0, gap = 12, rowH = 150;
 
-  function squarify(items, x, y, w, h, out){
-    /* Bruls, Huizing, van Wijk. items sorted desc, each {v}. Fills out[i] = {x,y,w,h}. */
-    var total = 0; items.forEach(function(it){ total += it.v; });
-    var scale = (w * h) / total, i = 0;
-    while(i < items.length){
-      var horiz = w >= h, side = horiz ? h : w, row = [], sum = 0, worst = Infinity;
-      for(var j = i; j < items.length; j++){
-        var a = items[j].v * scale, s2 = sum + a, mn = Infinity, mx = 0;
-        for(var k = i; k <= j; k++){ var b = items[k].v * scale; if(b < mn) mn = b; if(b > mx) mx = b; }
-        var r = Math.max(side * side * mx / (s2 * s2), s2 * s2 / (side * side * mn));
-        if(r > worst){ break; }
-        worst = r; sum = s2; row.push(items[j]);
+  function sizeOf(w, h){ return w >= 2 && h >= 2 ? "lg" : w >= 2 ? "wide" : h >= 2 ? "tall" : "sm"; }
+  function spanOf(id){ var sz = TILES[id].size; if(cols <= 2 && sz === "lg") sz = "wide"; var sp = SPANS[sz]; return { w:Math.min(sp.w, cols), h:sp.h }; }
+  var overlaps = function(a, b){ return a.col < b.col + b.w && b.col < a.col + a.w && a.row < b.row + b.h && b.row < a.row + a.h; };
+  var contains = function(o, i){ return i.col >= o.col && i.row >= o.row && i.col + i.w <= o.col + o.w && i.row + i.h <= o.row + o.h; };
+  function layout(items){
+    if(cols < 1 || !items.length) return [];
+    return tile(items) || pack(items);
+  }
+  function tile(items){
+    var spans = items.map(spanOf), area = 0, k;
+    spans.forEach(function(sp){ area += sp.w * sp.h; });
+    for(k = 0; k < spans.length; k++){ if(area % cols && spans[k].w === 1 && spans[k].h === 1 && cols > 1){ spans[k].w++; area++; } }
+    var rows = Math.ceil(area / cols), grid = [], used = [], out = [], budget = 20000, n;
+    for(n = 0; n < rows * cols; n++) grid.push(false);
+    for(n = 0; n < items.length; n++) used.push(false);
+    function fits(w, h, r, c){ if(c + w > cols || r + h > rows) return false; for(var y = r; y < r + h; y++) for(var x = c; x < c + w; x++) if(grid[y * cols + x]) return false; return true; }
+    function mark(w, h, r, c, v){ for(var y = r; y < r + h; y++) for(var x = c; x < c + w; x++) grid[y * cols + x] = v; }
+    function place(count){
+      if(count === items.length) return grid.every(Boolean);
+      if(--budget < 0) return false;
+      var i = grid.indexOf(false); if(i < 0) return false;
+      var r = Math.floor(i / cols), c = i % cols, tried = {};
+      for(var k = 0; k < items.length; k++){
+        if(used[k]) continue;
+        var w = spans[k].w, h = spans[k].h, shape = w + "x" + h;
+        if(tried[shape] || !fits(w, h, r, c)) continue;
+        tried[shape] = true; used[k] = true; mark(w, h, r, c, true);
+        out.push({ id:items[k], col:c, row:r, w:w, h:h });
+        if(place(count + 1)) return true;
+        out.pop(); mark(w, h, r, c, false); used[k] = false;
       }
-      var thick = sum / side, off = 0;
-      row.forEach(function(it){
-        var len = it.v * scale / thick;
-        out[it.i] = horiz ? { x:x, y:y + off, w:thick, h:len } : { x:x + off, y:y, w:len, h:thick };
-        off += len;
-      });
-      if(horiz){ x += thick; w -= thick; } else { y += thick; h -= thick; }
-      i += row.length;
+      return false;
     }
+    return place(0) ? out : null;
+  }
+  function pack(items){
+    var out = [], row = 0, index = 0;
+    while(index < items.length){
+      var band = [], col = 0;
+      while(index < items.length){
+        var sp = spanOf(items[index]); if(col + sp.w > cols) break;
+        band.push({ id:items[index], col:col, row:row, w:sp.w, h:sp.h }); col += sp.w; index++;
+      }
+      var height = 1; band.forEach(function(p){ if(p.h > height) height = p.h; });
+      band[band.length - 1].w += cols - col;
+      band.forEach(function(p){ p.h = height; out.push(p); });
+      row += height;
+    }
+    return out;
+  }
+  function sortPlaces(ps){ return ps.slice().sort(function(a, b){ return a.row - b.row || a.col - b.col; }); }
+  function canonical(items){
+    var places = layout(items); if(places.length !== items.length) return items;
+    var sorted = sortPlaces(places).map(function(p){ return p.id; });
+    if(sorted.every(function(id, i){ return id === items[i]; })) return items;
+    var at = {}; places.forEach(function(p){ at[p.id] = p; });
+    var same = layout(sorted).every(function(p){ var q = at[p.id]; return q && q.col === p.col && q.row === p.row && q.w === p.w && q.h === p.h; });
+    return same ? sorted : items;
+  }
+  function moveTo(items, id, index){
+    var from = items.indexOf(id); if(from < 0 || from === index || index < 0 || index >= items.length) return items;
+    var next = items.slice(); next.splice(from, 1); next.splice(index, 0, id); return next;
+  }
+  var sameOrder = function(a, b){ return a.length === b.length && a.every(function(id, i){ return id === b[i]; }); };
+  function toSlot(box){
+    var rect = board.getBoundingClientRect(), cs = unit + gap, rs = rowH + gap;
+    var left = rect.left + box.col * cs, top = rect.top + box.row * rs;
+    return { left:left, top:top, right:left + box.w * cs - gap, bottom:top + box.h * rs - gap };
+  }
+  function choose(home, cands, cx, cy){
+    var distance = function(sl, inset){ var ix = (sl.right - sl.left) * inset, iy = (sl.bottom - sl.top) * inset;
+      return Math.hypot(Math.max(sl.left + ix - cx, 0, cx - (sl.right - ix)), Math.max(sl.top + iy - cy, 0, cy - (sl.bottom - iy))); };
+    var toCentre = function(sl){ return Math.hypot((sl.left + sl.right) / 2 - cx, (sl.top + sl.bottom) / 2 - cy); };
+    var best = distance(home, 0); if(best === 0) return null;
+    var pick = null, bestC = Infinity;
+    cands.forEach(function(c){ var d = distance(c.slot, 0.18), cc = toCentre(c.slot); if(d < best || (d === best && pick && cc < bestC)){ best = d; bestC = cc; pick = c.order; } });
+    return pick;
+  }
+  function candidatesFor(items, id){
+    var places = layout(items), me = null, out = [], rows = 0;
+    places.forEach(function(p){ if(p.id === id) me = p; if(p.row + p.h > rows) rows = p.row + p.h; });
+    if(!me) return out;
+    for(var row = 0; row + me.h <= rows; row++) for(var col = 0; col + me.w <= cols; col++){
+      var area = { col:col, row:row, w:me.w, h:me.h }; if(overlaps(area, me)) continue;
+      var group = places.filter(function(p){ return overlaps(p, area); });
+      if(group.length < 2 || !group.every(function(p){ return contains(area, p); })) continue;
+      var moved = places.map(function(p){ return p.id === id ? { id:p.id, col:col, row:row, w:p.w, h:p.h } : group.indexOf(p) >= 0 ? { id:p.id, col:p.col - col + me.col, row:p.row - row + me.row, w:p.w, h:p.h } : p; });
+      out.push({ order:sortPlaces(moved).map(function(p){ return p.id; }), slot:toSlot(area) });
+    }
+    var from = items.indexOf(id);
+    for(var i = 0; i < items.length; i++){
+      if(i === from) continue;
+      var ord = moveTo(items, id, i), p2 = null;
+      layout(ord).forEach(function(q){ if(q.id === id) p2 = q; });
+      if(p2) out.push({ order:ord, slot:toSlot(p2) });
+    }
+    return out;
   }
 
-  function buildRegion(id, side){
-    var reg = document.getElementById(id);
-    var items = TILES.filter(function(t){ return t.side === side; }).map(function(t, n){ return { v:t.count, i:n, t:t }; });
-    var max = items[0].v, box = reg.getBoundingClientRect(), top = 40;
-    var rects = []; squarify(items, 0, top, box.width, box.height - top, rects);
-    items.forEach(function(it){
-      var r = rects[it.i], xs = r.w < 46 || r.h < 46, b = document.createElement(xs ? "i" : "button");
-      if(!xs){ b.type = "button"; } b.className = "tile" + (it.t.all ? " tile--all" : ""); b.setAttribute("data-i", TILES.indexOf(it.t));
-      b.style.setProperty("--t", (it.v / max).toFixed(3));
-      b.style.left = r.x + "px"; b.style.top = r.y + "px"; b.style.width = (r.w - 2) + "px"; b.style.height = (r.h - 2) + "px";
-      b.title = it.t.name + ", " + fmt(it.v);
-      if(xs){ b.className += " xs"; } else if(r.w < 110 || r.h < 48){ b.className += " s noc"; } else if(r.h < 60){ b.className += " noc"; }
-      b.innerHTML = "<span></span><b></b>"; b.firstChild.textContent = it.t.name; b.lastChild.textContent = fmt(it.v);
-      reg.appendChild(b);
+  /* tiles */
+  var els = {};
+  TILES.forEach(function(t, i){
+    var el = document.createElement("div");
+    el.className = "wg"; el.setAttribute("role", "button"); el.tabIndex = 0; el.setAttribute("aria-pressed", "false");
+    el.setAttribute("data-id", i); el.setAttribute("data-side", t.side); if(t.all) el.setAttribute("data-all", "");
+    el.setAttribute("aria-label", t.name + ", " + fmt(t.count) + " " + STRIP.contacts + ", " + t.sideName);
+    var max = 0; TILES.forEach(function(o){ if(o.side === t.side && o.count > max) max = o.count; });
+    el.innerHTML = '<div class="wg__card"><div class="wg__top"><span class="wg__seg"></span><span class="wg__rank"></span><span class="wg__pin"></span><span class="wg__vs"></span></div>' +
+      '<div class="wg__name"></div><div class="wg__n"></div><div class="wg__bar"><i></i></div><div class="wg__share"></div><div class="wg__all"></div></div>';
+    var card = el.firstChild; card.style.setProperty("--t", (t.count / max).toFixed(3)); card.style.setProperty("--w", t.share + "%");
+    card.querySelector(".wg__seg").textContent = t.sideShort;
+    card.querySelector(".wg__rank").textContent = t.all ? BENTO.tail : BENTO.rank.replace("{rank}", t.rank).replace("{n}", t.n);
+    card.querySelector(".wg__pin").textContent = STRIP.pinned;
+    card.querySelector(".wg__name").textContent = t.name; card.querySelector(".wg__n").textContent = fmt(t.count);
+    card.querySelector(".wg__share").textContent = BENTO.share.replace("{share}", t.share).replace("{book}", t.sideName);
+    card.querySelector(".wg__all").textContent = BENTO.all.replace("{share}", t.shareAll);
+    els[i] = el; board.appendChild(el);
+  });
+  if(reduced) board.classList.add("static");
+  document.getElementById("bentoHint").textContent = reduced ? BENTO.hintStatic : BENTO.hint;
+
+  function measure(){
+    var w = board.getBoundingClientRect().width; if(w < 1) return;
+    var cs = getComputedStyle(board); rowH = parseFloat(cs.getPropertyValue("--rowh")) || 150; gap = parseFloat(cs.getPropertyValue("--gap")) || 12;
+    cols = Math.max(2, Math.min(6, Math.round(w / 190)));
+    unit = (w - gap * (cols - 1)) / cols;
+  }
+  var drag = null;
+  function render(){
+    var places = layout(order), rows = 0, sorted = sortPlaces(places);
+    places.forEach(function(p){
+      var el = els[p.id]; if(p.row + p.h > rows) rows = p.row + p.h;
+      el.setAttribute("data-size", sizeOf(p.w, p.h)); el.setAttribute("aria-posinset", sorted.indexOf(p) + 1); el.setAttribute("aria-setsize", places.length);
+      el.style.width = (p.w * (unit + gap) - gap) + "px"; el.style.height = (p.h * (rowH + gap) - gap) + "px";
+      el.setAttribute("data-x", p.col * (unit + gap)); el.setAttribute("data-y", p.row * (rowH + gap));
+      if(drag && drag.lifted && drag.id === p.id) return;
+      el.style.transform = "translate(" + (p.col * (unit + gap)) + "px," + (p.row * (rowH + gap)) + "px)";
+    });
+    board.style.height = (rows * (rowH + gap) - gap) + "px";
+    document.getElementById("bentoReset").hidden = sameOrder(order, initial);
+  }
+  measure(); render();
+  var rsz = 0; window.addEventListener("resize", function(){ clearTimeout(rsz); rsz = setTimeout(function(){ measure(); render(); }, 120); });
+
+  /* drag: pointer on desktop, press and hold on touch */
+  var frame = 0, lastMove = 0, swallowUntil = 0, startOrder = null;
+  function step(force){
+    frame = 0; var d = drag; if(!d || !d.lifted || !cols) return;
+    var now = performance.now();
+    if(!force && now - lastMove < 40){ frame = requestAnimationFrame(function(){ step(false); }); return; }
+    var me = null; layout(order).forEach(function(p){ if(p.id === d.id) me = p; }); if(!me) return;
+    var r = d.el.getBoundingClientRect();
+    var next = choose(toSlot(me), candidatesFor(order, d.id), r.left + r.width / 2, r.top + r.height / 2);
+    if(!next) return;
+    lastMove = now; order = canonical(next); render();
+  }
+  function lift(){
+    var d = drag; if(!d || d.lifted) return;
+    d.lifted = true; startOrder = order.slice(); lastMove = 0;
+    d.el.classList.remove("holding"); d.el.classList.add("held", "raised");
+    try { d.el.setPointerCapture(d.pid); } catch(err){}
+    if(d.touch && navigator.vibrate) navigator.vibrate(10);
+  }
+  board.addEventListener("pointerdown", function(e){
+    var el = e.target.closest(".wg"); if(!el || reduced || e.button !== 0 || !e.isPrimary || drag) return;
+    drag = { id:+el.getAttribute("data-id"), el:el, pid:e.pointerId, x:e.clientX, y:e.clientY, left:+el.getAttribute("data-x"), top:+el.getAttribute("data-y"), lifted:false, touch:e.pointerType === "touch" };
+    if(drag.touch){ el.classList.add("holding"); drag.timer = setTimeout(lift, 350); }
+  });
+  board.addEventListener("touchmove", function(e){ if(drag && drag.lifted) e.preventDefault(); }, { passive:false });
+  board.addEventListener("contextmenu", function(e){ if(drag) e.preventDefault(); });
+  window.addEventListener("pointermove", function(e){
+    var d = drag; if(!d || e.pointerId !== d.pid) return;
+    var dx = e.clientX - d.x, dy = e.clientY - d.y;
+    if(!d.lifted){
+      if(Math.hypot(dx, dy) <= 8) return;
+      if(d.touch){ clearTimeout(d.timer); d.el.classList.remove("holding"); drag = null; return; }
+      lift();
+    }
+    d.el.style.transform = "translate(" + (d.left + dx) + "px," + (d.top + dy) + "px) scale(1.015)";
+    if(!frame) frame = requestAnimationFrame(function(){ step(false); });
+  });
+  function finish(e){
+    var d = drag; if(!d || e.pointerId !== d.pid) return;
+    drag = null; clearTimeout(d.timer); d.el.classList.remove("holding");
+    if(!d.lifted) return;
+    cancelAnimationFrame(frame); frame = 0;
+    drag = d; step(true); drag = null;
+    d.el.classList.remove("held"); d.el.classList.add("landed"); render();
+    swallowUntil = performance.now() + 300;
+    setTimeout(function(){ d.el.classList.remove("landed", "raised"); }, 620);
+    if(startOrder && !sameOrder(startOrder, order) && window.dataLayer){ window.dataLayer.push({ event:"bento_reorder" }); }
+    startOrder = null;
+  }
+  window.addEventListener("pointerup", finish); window.addEventListener("pointercancel", finish);
+  document.getElementById("bentoReset").addEventListener("click", function(){ order = initial.slice(); render(); });
+
+  /* pin and compare */
+  var strip = document.getElementById("strip");
+  function ratioText(a, b){ var r = a / b; return (r >= 10 ? Math.round(r) : r < 0.1 ? r.toFixed(2) : r.toFixed(1)) + "x"; }
+  function paintPins(){
+    board.classList.toggle("cmp", pinned !== null);
+    TILES.forEach(function(t, i){
+      var el = els[i], on = i === pinned; el.classList.toggle("pin", on); el.setAttribute("aria-pressed", on ? "true" : "false");
+      el.querySelector(".wg__vs").textContent = pinned === null || on ? "" : ratioText(t.count, TILES[pinned].count) + " " + TILES[pinned].name;
     });
   }
-  function buildMap(){
-    Array.prototype.forEach.call(document.querySelectorAll("#map .tile"), function(t){ t.parentNode.removeChild(t); });
-    buildRegion("regPeo", "peo"); buildRegion("regEor", "eor");
-    if(pinned !== null){ var t = document.querySelector('.tile[data-i="' + pinned + '"]'); if(t) t.classList.add("pin"); }
-  }
-
-  var strip = document.getElementById("strip");
   function show(i, vs){
     var t = TILES[i];
     strip.classList.add("has");
-    document.getElementById("stripEm").textContent = vs === null ? STRIP.preview : STRIP.pinned;
+    document.getElementById("stripEm").textContent = vs === null ? (pinned === i ? STRIP.pinned : STRIP.preview) : STRIP.pinned;
     document.getElementById("stripName").innerHTML = "<span></span><small></small>";
     document.getElementById("stripName").firstChild.textContent = t.name;
     document.getElementById("stripName").lastChild.textContent = fmt(t.count) + " " + STRIP.contacts;
@@ -677,13 +870,8 @@ i.tile{display:block;cursor:default} /* too small to tap; still counted, still n
     document.getElementById("stShare").lastChild.textContent = t.sideName;
     document.getElementById("stRank").textContent = t.all ? STRIP.rest : t.rank + " " + STRIP.of + " " + t.n;
     var vsEm = document.getElementById("stVsEm"), vsB = document.getElementById("stVs");
-    if(vs !== null && vs !== i){
-      var o = TILES[vs], ratio = t.count / o.count;
-      vsEm.textContent = STRIP.vs + " " + o.name;
-      vsB.textContent = (ratio >= 10 ? Math.round(ratio) : ratio.toFixed(1)) + "x";
-    } else {
-      vsEm.textContent = STRIP.all; vsB.textContent = t.shareAll + "%";
-    }
+    if(vs !== null && vs !== i){ vsEm.textContent = STRIP.vs + " " + TILES[vs].name; vsB.textContent = ratioText(t.count, TILES[vs].count); }
+    else { vsEm.textContent = STRIP.all; vsB.textContent = t.shareAll + "%"; }
     var cta = document.getElementById("stripCta");
     cta.hidden = false; cta.textContent = STRIP.cta.replace("{label}", t.all ? t.sideName : t.name);
   }
@@ -694,30 +882,45 @@ i.tile{display:block;cursor:default} /* too small to tap; still counted, still n
     document.getElementById("stripName").textContent = STRIP.idleName;
     document.getElementById("stripCta").hidden = true;
   }
-  var map = document.getElementById("map");
-  map.addEventListener("click", function(e){
-    var t = e.target.closest(".tile"); if(!t) return;
-    var i = +t.getAttribute("data-i");
-    Array.prototype.forEach.call(map.querySelectorAll(".tile.pin"), function(x){ x.classList.remove("pin"); });
-    if(pinned === i){ pinned = null; idle(); return; }
-    pinned = i; t.classList.add("pin"); show(i, null);
-    if(window.dataLayer){ window.dataLayer.push({ event:"segment_click", segment:TILES[i].name }); }
+  function togglePin(i){
+    pinned = pinned === i ? null : i; paintPins(); idle();
+    if(pinned !== null && window.dataLayer){ window.dataLayer.push({ event:"segment_click", segment:TILES[i].name }); }
+  }
+  board.addEventListener("click", function(e){
+    var el = e.target.closest(".wg"); if(!el) return;
+    if(performance.now() < swallowUntil){ e.preventDefault(); return; }
+    togglePin(+el.getAttribute("data-id"));
+  });
+  board.addEventListener("keydown", function(e){
+    var el = e.target.closest(".wg"); if(!el) return;
+    var id = +el.getAttribute("data-id");
+    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); togglePin(id); return; }
+    if(!e.altKey || reduced) return;
+    var delta = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+    if(!delta) return; e.preventDefault();
+    var from = order.indexOf(id);
+    for(var to = from + delta; to >= 0 && to < order.length; to += delta){
+      var next = canonical(moveTo(order, id, to)); if(sameOrder(next, order)) continue;
+      order = next; render(); el.focus(); return;
+    }
   });
   function peek(e){
-    var t = e.target.closest(".tile"); if(!t) return;
-    var i = +t.getAttribute("data-i");
+    var el = e.target.closest(".wg"); if(!el || drag) return;
+    var i = +el.getAttribute("data-id");
     if(pinned === null){ show(i, null); } else if(i !== pinned){ show(pinned, i); }
   }
-  map.addEventListener("pointerover", peek);
-  map.addEventListener("focusin", peek);
-  map.addEventListener("pointerleave", idle);
-  map.addEventListener("focusout", function(e){ if(!map.contains(e.relatedTarget)) idle(); });
+  board.addEventListener("pointerover", peek);
+  board.addEventListener("focusin", peek);
+  board.addEventListener("pointerleave", idle);
+  board.addEventListener("focusout", function(e){ if(!board.contains(e.relatedTarget)) idle(); });
   document.getElementById("stripCta").addEventListener("click", function(){
-    var t = TILES[pinned]; choose(t.seg, t.all ? t.name.toLowerCase() : t.name, t.all);
+    var t = TILES[pinned]; choose_(t.seg, t.all ? t.name.toLowerCase() : t.name, t.all);
   });
-  buildMap(); idle();
-  var mapTimer = 0;
-  window.addEventListener("resize", function(){ clearTimeout(mapTimer); mapTimer = setTimeout(buildMap, 120); });
+  (function(){
+    var m = /[?&]hl=([^&]+)/.exec(location.search), key = m ? decodeURIComponent(m[1]).toLowerCase() : "";
+    TILES.forEach(function(t, i){ if(key && !t.all && t.name.toLowerCase().split(" ")[0] === key){ pinned = i; } });
+    paintPins(); idle();
+  })();
 
   /* ---- Objection rail ---- */
   var tabs = document.querySelectorAll(".rail [role=tab]"), panes = document.querySelectorAll(".pane2");

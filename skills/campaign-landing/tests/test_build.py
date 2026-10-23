@@ -38,6 +38,8 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(len(tiles), 16)
         self.assertEqual(sum(t['count'] for t in tiles if t['side'] == 'peo'), self.site['compare']['left']['total'])
         self.assertEqual([t['rank'] for t in tiles if t['side'] == 'eor'], list(range(1, 9)))
+        self.assertIn('id="board" role="group"', text)
+        self.assertIn('"rank": "#{rank} of {n}"', text)
         self.assertEqual(text.count('role="tab"'), 5)
         self.assertEqual(text.count('class="pane2"'), 5)
         self.assertIn('data:image/png;base64,', text)
@@ -47,6 +49,12 @@ class BuildTests(unittest.TestCase):
         by = {t['name']: t for t in module.tiles(self.site)}
         self.assertEqual(by['Insperity']['share'], 26)
         self.assertEqual(by['Deel']['share'], 50)
+        self.assertEqual(by['Insperity']['size'], 'lg')
+        self.assertEqual(by['Deel']['size'], 'lg')
+        self.assertEqual(by['TriNet']['size'], 'wide')
+        self.assertEqual(by['CoAdvantage']['size'], 'sm')
+        self.assertEqual(by['All other PEOs']['size'], 'wide')
+        self.assertEqual(by['Oyster HR']['sideShort'], 'EOR')
         self.assertEqual(by['All other PEOs']['count'], 25846)
         self.assertTrue(by['All other PEOs']['all'])
 

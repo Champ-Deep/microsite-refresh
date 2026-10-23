@@ -102,8 +102,8 @@
   },
   "compare": {
     "title": "Who Is On Which Platform",
-    "sub": "Every provider's book, sized to scale. Click one to pin it, hover another to compare.",
-    "note": "Tile area is proportional to contacts held. All provider names are trademarks of their respective owners. Span Global Services is not affiliated with, endorsed by or sponsored by any of them.",
+    "sub": "Every provider's book as a tile, sized by its share. Click one to pin it and every other tile shows the ratio. Drag tiles to put two rivals side by side.",
+    "note": "Tile size follows each provider's share of its own book. All provider names are trademarks of their respective owners. Span Global Services is not affiliated with, endorsed by or sponsored by any of them.",
     "left": {
       "name": "PEO platforms",
       "segment": "PEO platform users",
@@ -138,7 +138,8 @@
           "name": "Tandem HR",
           "count": 8186
         }
-      ]
+      ],
+      "short": "PEO"
     },
     "right": {
       "name": "EOR platforms",
@@ -174,7 +175,8 @@
           "name": "Oyster HR",
           "count": 2259
         }
-      ]
+      ],
+      "short": "EOR"
     },
     "strip": {
       "idle": "Pick a provider",
@@ -190,6 +192,18 @@
       "pinned": "Pinned",
       "contacts": "contacts",
       "cta": "Brief me on {label}"
+    },
+    "bento": {
+      "lgAt": 20,
+      "wideAt": 10,
+      "hint": "Drag to rearrange. On touch, press and hold first. Keyboard: Alt plus arrow keys.",
+      "hintStatic": "Largest books first. Click a tile to pin it.",
+      "reset": "Reset order",
+      "rank": "#{rank} of {n}",
+      "tail": "Long tail",
+      "share": "{share}% of {book}",
+      "tailLabel": "Everything outside the named providers",
+      "all": "{share}% of all 331,816 contacts"
     }
   },
   "account": {

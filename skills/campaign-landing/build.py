@@ -100,6 +100,8 @@ def sources(id_, items, label):
 def tiles(site):
     """One entry per provider across both books, with share and rank precomputed for the strip."""
     grand = sum(int(site['compare'][k]['total']) for k in ('left', 'right'))
+    bento = site['compare'].get('bento', {})
+    lg_at, wide_at = int(bento.get('lgAt', 20)), int(bento.get('wideAt', 10))
     out = []
     for key, side_id in (('left', 'peo'), ('right', 'eor')):
         side = site['compare'][key]
@@ -109,9 +111,12 @@ def tiles(site):
         if other > 0:
             items.append((side['otherLabel'], other, True))
         for rank, (name, count, is_all) in enumerate(items, 1):
+            share = count / total * 100
+            size = 'wide' if is_all else 'lg' if share >= lg_at else 'wide' if share >= wide_at else 'sm'
             out.append({'name': name, 'count': count, 'all': is_all, 'side': side_id, 'sideName': side['name'],
-                        'seg': side['segment'], 'rank': rank, 'n': len([i for i in items if not i[2]]),
-                        'share': round(count / total * 100), 'shareAll': round(count / grand * 100)})
+                        'sideShort': side.get('short', side['name']), 'seg': side['segment'], 'rank': rank,
+                        'n': len([i for i in items if not i[2]]), 'share': round(share),
+                        'shareAll': round(count / grand * 100), 'size': size})
     return out
 
 
@@ -204,6 +209,8 @@ def render(site, source):
         'compare.title': E(site['compare']['title']), 'compare.sub': E(site['compare']['sub']),
         'compare.note': E(site['compare']['note']),
         'compare.tilesJson': json.dumps(tiles(site)), 'compare.stripJson': json.dumps(site['compare']['strip']),
+        'compare.bentoJson': json.dumps(site['compare']['bento']),
+        **{'compare.bento.' + k: E(str(x)) for k, x in site['compare']['bento'].items()},
         **{'compare.strip.' + k: E(x) for k, x in site['compare']['strip'].items()},
         'account.title': E(site['account']['title']), 'account.lede': E(site['account']['lede']),
         'account.groups': ''.join('          <li>%s</li>\n' % E(g) for g in site['account']['groups']),
