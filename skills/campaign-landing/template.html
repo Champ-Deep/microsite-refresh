@@ -113,12 +113,13 @@ p{margin:0 0 var(--s2)}
 .form.done .thanks{display:block}
 
 /* counter rail, modelled on the SPAN homepage counters */
-.band{background:var(--green);color:#fff;padding:30px 0}
+/* Stat band is the inverse scheme on purpose: white ground, green figures, between the dark hero and the next section. Keep it inverted in every skin. */
+.band{background:#fff;color:var(--green);padding:30px 0;border-bottom:1px solid var(--line)}
 .band__in{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3)}
-.band__n{text-align:center;border-right:1px solid rgba(255,255,255,.25)}
+.band__n{text-align:center;border-right:1px solid var(--line)}
 .band__n:last-child{border-right:0}
 .band__n b{display:block;font-family:'Montserrat',sans-serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
-.band__n span{display:block;font-size:.8rem;font-weight:500;color:rgba(255,255,255,.8);margin-top:6px}
+.band__n span{display:block;font-size:.8rem;font-weight:500;color:var(--muted);margin-top:6px}
 
 /* client strip */
 .clients{border-bottom:1px solid var(--line);background:#fff;padding:18px 0}

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.3 (25 Oct 2026)
+- campaign-landing: stat band inverted to white with green figures as a standing rule (see SKILL.md).
+
 ## 0.6.2 (25 Oct 2026)
 - campaign-landing: hero background is now the 21st.dev Dither Grid gradient on canvas (Bayer-ordered 25x15 cells, palette swept along the 62deg diagonal, rAF paused off screen, still under reduced motion). Hero copy flipped to white with a wash, 0 contrast fails. Fixed the phone gutter the hero grid had zeroed.
 

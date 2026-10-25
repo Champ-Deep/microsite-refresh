@@ -1,6 +1,6 @@
 {
   "name": "microsite-refresh",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Refresh Champions Group data-list microsites into 2027-ready landing pages: a signature hero worked out with the owner, purpose-first navigation (any list in two clicks), a drop-a-file verification hero, human writing with no AI slop, visual QA and agent readiness for AI crawlers and browser agents. Includes scroll-craft and human-speak by Nate Herk (MIT).",
   "author": {
     "name": "Champions Accelerator"
