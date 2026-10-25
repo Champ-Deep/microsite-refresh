@@ -56,9 +56,16 @@ p{margin:0 0 var(--s2)}
 .bar__tel{font-weight:600;font-size:.95rem;color:var(--text);text-decoration:none;display:flex;align-items:center;min-height:44px}
 
 /* FOLD 1. HERO */
-.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--bg) 0%,#fff 75%);border-bottom:1px solid var(--line)}
+.hero{position:relative;overflow:hidden;background:#0E2417;border-bottom:1px solid var(--line)}
+/* Dither Grid gradient (21st.dev community gradients), drawn on canvas; the wash keeps copy at 4.5:1 over the brightest cell */
+.hero__dither{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero__wash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(14,36,23,.64) 52%,rgba(14,36,23,.9) 100%)}
+.hero__in{position:relative}
+.hero .eyebrow{color:#DDF0C8} .hero h1,.hero .hero__lede,.hero .ticks li,.hero .buy p,.hero .srcs__btn,.hero .srcs__list a,.hero .srcs__list b{color:#fff}
+.hero .srcs__list small{color:rgba(255,255,255,.85)} .hero .srcs__list a:hover{background:rgba(255,255,255,.1)}
+.hero .buy{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28)} .hero .buy svg{stroke:#DDF0C8} .hero .buy a{color:#fff}
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--green),var(--teal))}
-.hero__in{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--s5);align-items:start;padding:var(--s5) 0}
+.hero__in{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--s5);align-items:start;padding-top:var(--s5);padding-bottom:var(--s5)} /* shorthand here zeroed the shell gutter on phones */
 .eyebrow{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(1.25rem,2.2vw,1.75rem);letter-spacing:-.01em;color:var(--green);margin:0 0 14px}
 .hero h1{max-width:16ch}
 .hero__lede{font-size:clamp(1.15rem,1.6vw,1.3rem);color:var(--text);max-width:26em;margin-bottom:var(--s3);line-height:1.5}
@@ -399,6 +406,7 @@ p{margin:0 0 var(--s2)}
 
 <!-- ============ FOLD 1 ============ -->
 <section class="hero">
+  <canvas class="hero__dither" id="dither" aria-hidden="true"></canvas><div class="hero__wash" aria-hidden="true"></div>
   <div class="shell hero__in">
 
     <div class="hero__copy">
@@ -939,6 +947,33 @@ p{margin:0 0 var(--s2)}
     var m = /[?&]hl=([^&]+)/.exec(location.search), key = m ? decodeURIComponent(m[1]).toLowerCase() : "";
     TILES.forEach(function(t, i){ if(key && !t.all && t.name.toLowerCase().split(" ")[0] === key){ pinned = i; } });
     boards.forEach(bento); paintPins(); idle();
+  })();
+
+  /* ---- Hero dither grid: 21st.dev "Dither Grid" gradient, Bayer-ordered cells, palette ramp swept along the 62deg diagonal ---- */
+  (function(){
+    var cv = document.getElementById("dither"), ctx = cv.getContext("2d"), hero = cv.parentNode;
+    var PAL = [[0,"#0E2417"],[24,"#2E6B3E"],[61,"#DDF0C8"],[67,"#78B86B"]], COLS = 25, ROWS = 15, GAP = .07, DITHER = .76, ANG = 62 * Math.PI / 180;
+    var BAYER = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+    var still = (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) || /[?&]static=1/.test(location.search);
+    var t0 = performance.now(), live = true, raf = 0;
+    function draw(now){
+      raf = 0;
+      var w = hero.clientWidth, h = hero.clientHeight; if(cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
+      var ph = still ? 0 : (now - t0) / 1000 * 0.71, slide = Math.sin(ph * 0.9) * 0.5 * 0.60;
+      var cw = w / COLS, ch = h / ROWS, cx = Math.cos(ANG), sy = Math.sin(ANG), span = Math.abs(cx) * COLS + Math.abs(sy) * ROWS;
+      ctx.fillStyle = PAL[0][1]; ctx.fillRect(0, 0, w, h);
+      for(var r = 0; r < ROWS; r++) for(var c = 0; c < COLS; c++){
+        var u = ((c + .5) * cx + (r + .5) * sy) / span + slide; /* ramp position 0..1 along the diagonal */
+        var pos = u * 100 + (BAYER[r & 3][c & 3] / 16 - .5) * DITHER * 20, k = 0; /* nearest stop by its % position, ordered dither in % units */
+        for(var i = 1; i < PAL.length; i++) if(Math.abs(PAL[i][0] - pos) < Math.abs(PAL[k][0] - pos)) k = i;
+        ctx.fillStyle = PAL[k][1]; ctx.fillRect(c * cw + cw * GAP / 2, r * ch + ch * GAP / 2, cw * (1 - GAP), ch * (1 - GAP));
+      }
+      if(!still && live && !document.hidden) raf = requestAnimationFrame(draw);
+    }
+    draw(performance.now());
+    if("IntersectionObserver" in window){ new IntersectionObserver(function(en){ live = en[0].isIntersecting; if(live && !raf && !still) raf = requestAnimationFrame(draw); }).observe(hero); }
+    document.addEventListener("visibilitychange", function(){ if(!document.hidden && !raf && !still) raf = requestAnimationFrame(draw); });
+    window.addEventListener("resize", function(){ if(!raf) raf = requestAnimationFrame(draw); });
   })();
 
   /* ---- Objection rail ---- */

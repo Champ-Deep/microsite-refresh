@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.2 (25 Oct 2026)
+- campaign-landing: hero background is now the 21st.dev Dither Grid gradient on canvas (Bayer-ordered 25x15 cells, palette swept along the 62deg diagonal, rAF paused off screen, still under reduced motion). Hero copy flipped to white with a wash, 0 contrast fails. Fixed the phone gutter the hero grid had zeroed.
+
 ## 0.6.1 (23 Oct 2026)
 - campaign-landing: one bento board per book, PEO beside EOR, equal heights at 4 columns; hero eyebrow promoted to a Montserrat display line (Gary's note).
 
