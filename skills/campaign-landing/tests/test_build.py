@@ -58,6 +58,53 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(by['All other PEOs']['count'], 25846)
         self.assertTrue(by['All other PEOs']['all'])
 
+    def test_optional_sections_drop_out(self):
+        site = json.loads(json.dumps(self.site))
+        for key in ('band', 'clients', 'compare'):
+            del site[key]
+        del site['hero']['sources']
+        text = self.build(site)
+        self.assertNotIn('{{', text)
+        for marker in ('class="band"', 'class="clients"', 'id="strip"', 'var TILES', 'class="srcs" id="sources"'):
+            self.assertNotIn(marker, text)
+        self.assertIn('id="dither"', text)
+        self.assertIn('id="sources2"', text)
+
+    def test_optional_sections_independent(self):
+        for key in ('band', 'clients', 'compare'):
+            with self.subTest(section=key):
+                site = json.loads(json.dumps(self.site))
+                del site[key]
+                text = self.build(site)
+                self.assertNotIn('{{', text)
+                self.assertNotIn({'band': 'class="band"', 'clients': 'class="clients"',
+                                  'compare': 'var TILES'}[key], text)
+        site = json.loads(json.dumps(self.site))
+        del site['account']['sources']
+        self.assertNotIn('id="sources2"', self.build(site))
+
+    def test_inline_json_cannot_close_script(self):
+        import re
+        site = json.loads(json.dumps(self.site))
+        payload = '</script><script>alert("example")</script>&'
+        site['headlines']['variants']['test'] = payload
+        site['compare']['left']['items'][0]['name'] = payload
+        text = self.build(site)
+        self.assertNotIn(payload, text)
+        match = re.search(r'var HEADLINES = (.*);', text)
+        assert match is not None
+        self.assertEqual(json.loads(match.group(1))['test'], payload)
+        self.assertIn('\\u003c/script\\u003e', text)
+
+    def test_msp_example_builds_without_peo_proof(self):
+        source = ROOT / 'examples/span-msp-us'
+        with tempfile.TemporaryDirectory() as td:
+            text = module.build(source, Path(td) / 'msp.html')
+        self.assertNotIn('{{', text)
+        for marker in ('331,816', 'class="band"', 'class="clients"', 'var TILES', 'id="sources2"'):
+            self.assertNotIn(marker, text)
+        self.assertIn('MSP', text)
+
     def test_escapes_markup(self):
         site = json.loads(json.dumps(self.site))
         site['hero']['eyebrow'] = '<script>alert(1)</script>'

@@ -68,8 +68,8 @@
     "submit": "Request my competitor briefing",
     "sticky": "See my competitor briefing",
     "foot": "We ask what you are trying to achieve before we send anything. Scoped samples follow that conversation.",
-    "thanksTitle": "You are in",
-    "thanksText": "Check your inbox for confirmation. A specialist will reply within one business day to walk you through what we hold on the provider you named."
+    "thanksTitle": "Preview only, nothing sent",
+    "thanksText": "Your entries passed local validation and remain in this form. No competitor briefing request was sent."
   },
   "band": [
     {

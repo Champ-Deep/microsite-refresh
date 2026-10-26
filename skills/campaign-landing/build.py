@@ -18,6 +18,12 @@ GLOBE = ('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r=
          '<path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>')
 
 
+def script_json(value):
+    """JSON in an inline script must not be able to close its script element."""
+    return (json.dumps(value).replace('&', '\\u0026').replace('<', '\\u003c')
+            .replace('>', '\\u003e').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029'))
+
+
 def safe_url(value, allow_tel=False):
     if not isinstance(value, str) or re.search(r'[\s<>"\x00-\x1f]', value):
         raise ValueError('URL contains whitespace, control characters or markup: %r' % value)
@@ -46,10 +52,12 @@ def walk_strings(obj, path='site'):
 
 def validate(site, source):
     walk_strings(site)
-    for key in ['brand', 'meta', 'headlines', 'hero', 'form', 'band', 'clients', 'compare',
-                'account', 'dossier', 'faq', 'closer', 'footer', 'tracking']:
+    for key in ['brand', 'meta', 'headlines', 'hero', 'form', 'account', 'dossier', 'faq', 'closer', 'footer', 'tracking']:
         if key not in site:
             raise ValueError('Missing section ' + key)
+    # band, clients and compare are optional: a {{#key}}...{{/key}} block in the template drops out when the key is absent
+    if not isinstance(site['form'].get('phoneRequired', True), bool):
+        raise ValueError('form.phoneRequired must be a boolean')
     safe_url(site['brand']['domain'])
     safe_url(site['brand']['privacyUrl'])
     safe_url(site['meta']['canonical'])
@@ -57,15 +65,15 @@ def validate(site, source):
     if not logo.is_relative_to(source.resolve()) or not logo.is_file() or \
             not logo.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'):
         raise ValueError('Logo must be a PNG inside the source directory')
-    for side in ('left', 'right'):
+    for side in ('left', 'right') if 'compare' in site else ():
         s = site['compare'][side]
         if not s['items'] or any(int(i['count']) <= 0 for i in s['items']):
             raise ValueError('compare.%s needs positive counts' % side)
         if sum(int(i['count']) for i in s['items']) > int(s['total']):
             raise ValueError('compare.%s items exceed the stated total' % side)
-    if len(site['band']) != 4:
+    if 'band' in site and len(site['band']) != 4:
         raise ValueError('band needs exactly four counters')
-    for src in site['hero']['sources'] + site['account']['sources']:
+    for src in site['hero'].get('sources', []) + site['account'].get('sources', []):
         safe_url(src['url'])
     for col in site['footer']['columns']:
         for item in col['items']:
@@ -76,7 +84,7 @@ def validate(site, source):
     for item in site['faq']['items']:
         if item.get('visual') not in VISUALS:
             raise ValueError('faq item needs a visual in ' + ', '.join(sorted(VISUALS)))
-    for key in ('idle', 'idleName', 'hint', 'share', 'rank', 'all', 'vs', 'of', 'rest', 'preview', 'pinned', 'contacts', 'cta'):
+    for key in ('idle', 'idleName', 'hint', 'share', 'rank', 'all', 'vs', 'of', 'rest', 'preview', 'pinned', 'contacts', 'cta') if 'compare' in site else ():
         if key not in site['compare']['strip']:
             raise ValueError('compare.strip.' + key + ' missing')
 
@@ -87,6 +95,8 @@ def fav(domain):
 
 
 def sources(id_, items, label):
+    if not items:
+        return ''
     stack = ''.join(fav(i['domain']) for i in items)
     rows = ''.join(
         '<li><a href="%s" target="_blank" rel="noopener">%s<span><b>%s</b><small>%s</small></span></a></li>'
@@ -187,35 +197,30 @@ def render(site, source):
         'brand.privacyUrl': E(site['brand']['privacyUrl']),
         'meta.title': E(site['meta']['title']), 'meta.description': E(site['meta']['description']),
         'meta.canonical': E(site['meta']['canonical']),
-        'headlines.default': E(site['headlines']['default']), 'headlines.json': json.dumps(headlines),
+        'headlines.default': E(site['headlines']['default']), 'headlines.json': script_json(headlines),
         'hero.eyebrow': E(site['hero']['eyebrow']), 'hero.lede': E(site['hero']['lede']),
         'hero.ledeEmphasis': E(site['hero']['ledeEmphasis']),
         'hero.ticks': ''.join('        <li>%s%s</li>\n' % (tick, E(t)) for t in site['hero']['ticks']),
         'hero.callout.lead': E(site['hero']['callout']['lead']), 'hero.callout.text': E(site['hero']['callout']['text']),
         'hero.callout.link': E(site['hero']['callout']['link']),
-        'hero.sources': sources('sources', site['hero']['sources'], site['hero']['sourcesLabel']),
+        'hero.sources': sources('sources', site['hero'].get('sources', []), site['hero'].get('sourcesLabel', '')),
         'form.title': E(site['form']['title']), 'form.sub': E(site['form']['sub']),
-        'form.subChosenJson': json.dumps(site['form']['subChosen']),
+        'form.subChosenJson': script_json(site['form']['subChosen']),
         'form.segments': ''.join('                <option>%s</option>\n' % E(x) for x in site['form']['segments'])
                          + '                <option>%s</option>\n' % E(site['form']['specific']),
-        'form.specificJson': json.dumps(site['form']['specific']),
+        'form.specificJson': script_json(site['form']['specific']),
         'form.providerPlaceholder': E(site['form']['providerPlaceholder']),
+        'form.segmentLabel': E(site['form'].get('segmentLabel', 'Which install base')),
+        'form.providerLabel': E(site['form'].get('providerLabel', 'Which provider')),
+        'form.providerError': E(site['form'].get('providerError', 'Please name the provider')),
+        'form.phoneRequiredJson': script_json(site['form'].get('phoneRequired', True)),
         'form.consent': E(site['form']['consent']), 'form.submit': E(site['form']['submit']),
         'form.sticky': E(site['form']['sticky']), 'form.foot': E(site['form']['foot']),
         'form.thanksTitle': E(site['form']['thanksTitle']), 'form.thanksText': E(site['form']['thanksText']),
-        'band': ''.join('    <div class="band__n"><b>%s</b><span>%s</span></div>\n' % (E(b['value']), E(b['label'])) for b in site['band']),
-        'clients.label': E(site['clients']['label']),
-        'clients.names': '    ' + ''.join('<span>%s</span>' % E(n) for n in site['clients']['names']) + '\n',
-        'compare.title': E(site['compare']['title']), 'compare.sub': E(site['compare']['sub']),
-        'compare.note': E(site['compare']['note']),
-        'compare.tilesJson': json.dumps(tiles(site)), 'compare.stripJson': json.dumps(site['compare']['strip']),
-        'compare.bentoJson': json.dumps(site['compare']['bento']),
-        **{'compare.bento.' + k: E(str(x)) for k, x in site['compare']['bento'].items()},
-        **{'compare.strip.' + k: E(x) for k, x in site['compare']['strip'].items()},
         'account.title': E(site['account']['title']), 'account.lede': E(site['account']['lede']),
         'account.groups': ''.join('          <li>%s</li>\n' % E(g) for g in site['account']['groups']),
         'account.fit': E(site['account']['fit']),
-        'account.sources': sources('sources2', site['account']['sources'], site['account']['sourcesLabel']),
+        'account.sources': sources('sources2', site['account'].get('sources', []), site['account'].get('sourcesLabel', '')),
         'dossier.title': E(d['title']), 'dossier.tag': E(d['tag']), 'dossier.providerLabel': E(d['providerLabel']),
         'dossier.provider': E(d['provider']), 'dossier.columns': cols, 'dossier.footer': E(d['footer']),
         'faq.title': E(site['faq']['title']), 'faq.sub': E(site['faq']['sub']), 'faq.tabs': tabs, 'faq.panes': panes,
@@ -223,17 +228,30 @@ def render(site, source):
         'faq.ask.button': E(site['faq']['ask']['button']),
         'closer.title': E(site['closer']['title']), 'closer.text': E(site['closer']['text']),
         'closer.button': E(site['closer']['button']), 'closer.small': E(site['closer']['small']),
-        'footer.wordmark': E(site['footer']['wordmark']), 'footer.wordmarkJson': json.dumps(site['footer']['wordmark']),
+        'footer.wordmark': E(site['footer']['wordmark']), 'footer.wordmarkJson': script_json(site['footer']['wordmark']),
         'footer.meta': E(site['footer']['meta']), 'footer.columns': fcols,
-        'tracking.offerJson': json.dumps(site['tracking']['offer']), 'tracking.campaignJson': json.dumps(site['tracking']['campaign']),
-        'tracking.formJson': json.dumps(site['tracking']['form']), 'tracking.conversionJson': json.dumps(site['tracking']['conversionLabel']),
+        'tracking.offerJson': script_json(site['tracking']['offer']), 'tracking.campaignJson': script_json(site['tracking']['campaign']),
+        'tracking.formJson': script_json(site['tracking']['form']), 'tracking.conversionJson': script_json(site['tracking']['conversionLabel']),
     }
-    for side in ('left', 'right'):
-        s = site['compare'][side]
-        v['compare.%s.name' % side] = E(s['name'])
-        v['compare.%s.total' % side] = str(int(s['total']))
-        v['compare.%s.totalText' % side] = format(int(s['total']), ',')
+    if 'band' in site:
+        v['band'] = ''.join('    <div class="band__n"><b>%s</b><span>%s</span></div>\n' % (E(b['value']), E(b['label'])) for b in site['band'])
+    if 'clients' in site:
+        v['clients.label'] = E(site['clients']['label'])
+        v['clients.names'] = '    ' + ''.join('<span>%s</span>' % E(n) for n in site['clients']['names']) + '\n'
+    if 'compare' in site:
+        c = site['compare']
+        v.update({'compare.title': E(c['title']), 'compare.sub': E(c['sub']), 'compare.note': E(c['note']),
+                  'compare.tilesJson': script_json(tiles(site)), 'compare.stripJson': script_json(c['strip']),
+                  'compare.bentoJson': script_json(c['bento'])})
+        v.update({'compare.bento.' + k: E(str(x)) for k, x in c['bento'].items()})
+        v.update({'compare.strip.' + k: E(x) for k, x in c['strip'].items()})
+        for side in ('left', 'right'):
+            v['compare.%s.name' % side] = E(c[side]['name'])
+            v['compare.%s.total' % side] = str(int(c[side]['total']))
+            v['compare.%s.totalText' % side] = format(int(c[side]['total']), ',')
     template = (ROOT / 'template.html').read_text(encoding='utf-8')
+    for key in ('band', 'clients', 'compare'):
+        template = re.sub(r'\{\{#%s\}\}(.*?)\{\{/%s\}\}' % (key, key), (lambda m: m.group(1)) if key in site else '', template, flags=re.S)
     out = re.sub(r'\{\{([a-zA-Z.]+)\}\}', lambda m: v[m.group(1)], template)
     if DASH.search(out):
         raise ValueError('Dash in built output')

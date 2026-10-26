@@ -1,11 +1,11 @@
 ---
 name: campaign-landing
-description: "Use when building a SPAN Global Services paid-campaign landing page (Google Ads, LinkedIn, retargeting) for a data offer such as an install base, a users list or a competitor book. Builds a three-fold, four-field conversion page from site.json: SPAN brand system, headline variants per ad group, work-email gate, a provider bento (draggable widget grid, pin and compare), cited sources, dossier card, an objection rail with a visual answer per question, and the halftone wordmark footer. Opt-in sibling of refresh-site and venture-story, not a replacement for either."
+description: Use when building a SPAN paid-campaign landing page.
 ---
 
 # Campaign Landing
 
-A SPAN-branded landing page for one paid offer. The example is the PEO and EOR install base page (October 2026). The page is built from `site.json` so copy, counts and sources live in data and the HTML is never hand-edited.
+A SPAN-branded landing page for one paid offer. Examples cover both a count-backed PEO/EOR install base and a count-free MSP sample request. The page is built from site.json; copy, counts and sources stay in data, not hand-edited HTML. The portable entry skill is span-landing-page in Champ-Deep/champ-skills, design/span-landing-page/; this plugin path stays supported as its implementation.
 
 ## Route and scope
 
@@ -17,10 +17,11 @@ Choose this for a single-offer page behind an ad click: one headline (with `?hl=
 |---|---|
 | `examples/span-peo-eor/site.json` | Every string, count, source and tracking id on the page |
 | `examples/span-peo-eor/logo.png` | Real transparent SPAN logo, inlined at build |
+| `examples/span-msp-us/site.json` | Count-free source-backed MSP offer, optional phone and custom requirements |
 | `template.html` | The page with `{{tokens}}`; all CSS and JS inline |
 | `build.py` | Standard-library build: validates, escapes, computes bar widths, guards dashes |
 | `tests/test_build.py` | Build boundary tests |
-| `THIRD_PARTY.md` | The three 21st.dev components this page ports |
+| `THIRD_PARTY.md` | Provenance for the selected 21st.dev vanilla ports |
 
 ## Build
 
@@ -29,17 +30,17 @@ python3 build.py examples/span-peo-eor --out /abs/path/artifact.html
 python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-Python 3.10+ only. No Node, no network. The output opens from disk, with two exceptions it declares: Google Fonts, and the favicon service used by the sources stack (a globe icon replaces any favicon that fails).
+Python 3.10+ only. No Node or network needed for the build. The output opens from disk, with two exceptions it declares: Google Fonts, and the favicon service used by the sources stack (a globe icon replaces any favicon that fails).
 
 ## Contract
 
-- `headlines.default` plus `headlines.variants`: append `?hl=key` to the final URL per ad group. Google forbids trademarks in ad text; the page may name providers.
+- `headlines.default` plus `headlines.variants`: append `?hl=key` to the final URL per ad group. Check the current ad-platform trademark policy and the approved campaign before using provider names in ads; a headline variant alone is not legal approval.
 - `compare.left` and `compare.right`: `total`, `short` (PEO, EOR), named `items`, and `otherLabel`. The build derives the "all other" tile as total minus items and fails if items exceed the total, then precomputes share of book, share of all, rank and a size tier for every tile. `compare.bento` sets the tiers (`lgAt`, `wideAt` as percent of its own book; the long tail is always `wide`) and every label on the board. One board per book sits side by side (stacked on phones), each sorted by count; colour and a tag carry the book, tile size carries the tier. Boards run 4 columns on desktop because a 2x2 plus 2x1 mix tiles exactly at 4 and never at 3. Tiles drag to reorder (pointer, press and hold on touch, Alt plus arrows), click pins one and every other tile shows its ratio to it, `?hl=<provider>` pins that provider on load, and the navy strip shows count, share, rank and the CTA that writes the provider into the form. `compare.strip` holds every strip label.
-- `form`: four fields (name, work email, phone, install base). Company is derived from the email domain in the payload. The free-mail list in the template rejects personal addresses client side; mirror it at the real endpoint. `form.specific` is the option that reveals the provider field; chart rows fill it.
-- `hero.sources` and `account.sources`: each figure on the page needs a row here (domain, HTTPS url, title, snippet). No numbered citation marks anywhere.
+- `form`: four primary fields: name, work email, phone and requirement. Preserve optional phone with phoneRequired=false; default is true for the PEO fixture. segmentLabel, providerLabel and providerError distinguish Custom requirements from Which provider. The email domain is only a domain, not verified company identity. Mirror the free-mail filter at a real endpoint. form.specific reveals the conditional field.
+- `band`, `clients` and `compare` are optional, as are hero.sources and account.sources. Omit unsupported sections rather than invent counts, refresh dates, customer names, distribution charts or citations. When figures exist, source them beside the claim. No numbered citation marks.
 - `faq.items`: exactly five, each with `q`, a one-line `lead`, `detail`, a `visual` (`calls`, `sources`, `renewal`, `sample`, `roles`) and its `visualData`. The rail on the left is a tablist; the panel shows the visual above the answer. `faq.ask` is the navy card at the foot of the rail. The five visuals are fixed layouts in `build.py` fed by `visualData`; add a new kind there, do not inline markup in site.json.
-- `dossier`: illustrative only. The footer line must say the record is invented.
-- `tracking`: `conversionLabel` ships as a placeholder; set it before launch. The form handler logs the payload and flips to the thanks state; wire the real POST at the `FORM ENDPOINT` comment in the template.
+- `dossier`: illustrative only. Clearly label it a schematic layout, not real data. Do not apply Verified to a dummy email or carry legal-compliance badges into an offer without supporting evidence.
+- `tracking`: conversionLabel is not a real tracking ID until supplied. The unwired form is a preview, not lead capture: no personal-payload logs, lead conversions or false request-received messages. Wire and verify a real endpoint and tracking before launch. Keep preview feedback explicit that nothing was sent.
 
 ## Gates
 

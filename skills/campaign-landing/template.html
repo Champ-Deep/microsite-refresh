@@ -109,7 +109,6 @@ p{margin:0 0 var(--s2)}
 .thanks{display:none;text-align:center;padding:18px 4px}
 .thanks svg{width:52px;height:52px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin:0 auto var(--s2)}
 .thanks p{font-size:.98rem;margin:0}
-.form.done .form__body{display:none}
 .form.done .thanks{display:block}
 
 /* counter rail, modelled on the SPAN homepage counters */
@@ -448,14 +447,14 @@ p{margin:0 0 var(--s2)}
               <span class="err">Please enter a phone number</span>
             </div>
             <div class="field">
-              <label for="segment">Which install base</label>
+              <label for="segment">{{form.segmentLabel}}</label>
               <select id="segment" name="segment">
 {{form.segments}}              </select>
             </div>
             <div class="field" id="providerWrap">
-              <label for="provider">Which provider</label>
+              <label for="provider">{{form.providerLabel}}</label>
               <input type="text" id="provider" name="provider" placeholder="{{form.providerPlaceholder}}">
-              <span class="err">Please name the provider</span>
+              <span class="err">{{form.providerError}}</span>
             </div>
 
             <label class="consent" id="consentWrap">
@@ -463,7 +462,8 @@ p{margin:0 0 var(--s2)}
               <span>{{form.consent}} <a href="{{brand.privacyUrl}}" target="_blank" rel="noopener">privacy policy</a>.</span>
             </label>
 
-            <button type="submit" class="submit">{{form.submit}}</button>
+            <p class="form__foot" id="previewDisclosure">Preview only. This form is not connected. Nothing will be sent.</p>
+            <button type="submit" class="submit" aria-describedby="previewDisclosure">{{form.submit}}</button>
             <p class="form__foot">{{form.foot}}</p>
           </form>
         </div>
@@ -479,20 +479,20 @@ p{margin:0 0 var(--s2)}
   </div>
 </section>
 
-<div class="band">
+{{#band}}<div class="band">
   <div class="shell band__in">
 {{band}}  </div>
 </div>
-
-<!-- client strip -->
+{{/band}}
+{{#clients}}<!-- client strip -->
 <div class="clients">
   <div class="shell clients__in">
     <em>{{clients.label}}</em>
 {{clients.names}}
   </div>
 </div>
-
-<!-- ============ FOLD 2. PLATFORM LEDGER ============ -->
+{{/clients}}
+{{#compare}}<!-- ============ FOLD 2. PLATFORM LEDGER ============ -->
 <section class="section">
   <div class="shell">
     <div class="section__head center measure rv">
@@ -529,7 +529,7 @@ p{margin:0 0 var(--s2)}
     <p class="tmnote rv">{{compare.note}}</p>
   </div>
 </section>
-
+{{/compare}}
 <!-- ============ FOLD 3 ============ -->
 <section class="section section--soft">
   <div class="shell">
@@ -662,7 +662,7 @@ p{margin:0 0 var(--s2)}
     });
   });
 
-  /* ---- Bento. Vanilla port of the 21st.dev Draggable Widget Grid (deependhq island). ---- */
+{{#compare}}  /* ---- Bento. Vanilla port of the 21st.dev Draggable Widget Grid (deependhq island). ---- */
   var TILES = {{compare.tilesJson}};
   var STRIP = {{compare.stripJson}};
   var BENTO = {{compare.bentoJson}};
@@ -950,6 +950,7 @@ p{margin:0 0 var(--s2)}
     boards.forEach(bento); paintPins(); idle();
   })();
 
+{{/compare}}
   /* ---- Hero dither grid: 21st.dev "Dither Grid" gradient, Bayer-ordered cells, palette ramp swept along the 62deg diagonal ---- */
   (function(){
     var cv = document.getElementById("dither"), ctx = cv.getContext("2d"), hero = cv.parentNode;
@@ -1110,6 +1111,8 @@ p{margin:0 0 var(--s2)}
   var form = document.getElementById("leadForm");
   var card = document.getElementById("form");
   var em = document.getElementById("email");
+  var phoneRequired = {{form.phoneRequiredJson}};
+  document.querySelector('label[for="phone"]').textContent = phoneRequired ? "Phone" : "Phone (optional)";
   /* shortcut: client side list of common personal mail domains, upgrade to a server side check at the FORM ENDPOINT */
   var freeMail = /@(gmail|googlemail|yahoo|ymail|rocketmail|hotmail|outlook|live|msn|aol|icloud|me|mac|proton|protonmail|pm|gmx|mail|email|yandex|zoho|rediffmail|fastmail|hey|tutanota|tuta|duck)\.[a-z.]+$/i;
 
@@ -1124,11 +1127,13 @@ p{margin:0 0 var(--s2)}
 
   form.addEventListener("submit", function(ev){
     ev.preventDefault();
+    card.classList.remove("done");
     var ok = true;
 
     ["name","phone"].forEach(function(id){
       var el = document.getElementById(id);
-      var bad = el.value.trim().length < 2;
+      var value = el.value.trim();
+      var bad = id === "phone" && !phoneRequired && !value ? false : value.length < 2;
       mark(el, bad);
       if(bad){ ok = false; }
     });
@@ -1154,39 +1159,9 @@ p{margin:0 0 var(--s2)}
       return;
     }
 
-    var payload = {
-      name:     document.getElementById("name").value.trim(),
-      email:    v,
-      domain:   v.split("@")[1].toLowerCase(),
-      phone:    document.getElementById("phone").value.trim(),
-      segment:  sel.value,
-      provider: prov.value.trim(),
-      offer:    {{tracking.offerJson}},
-      campaign: {{tracking.campaignJson}},
-      variant:  key || "default",
-      gclid:    q("gclid"),
-      utmSource:   q("utm_source"),
-      utmCampaign: q("utm_campaign"),
-      utmTerm:     q("utm_term"),
-      pageUrl:  window.location.href
-    };
-
-    /* TRACKING HOOK. Set the real conversion label before launch. */
-    if(typeof window.gtag === "function"){
-      window.gtag("event","conversion",{ send_to:{{tracking.conversionJson}} });
-    }
-    if(window.dataLayer){
-      window.dataLayer.push({
-        event:"lead_submit", form:{{tracking.formJson}},
-        variant:payload.variant, segment:payload.segment, provider:payload.provider
-      });
-    }
-
-    /* FORM ENDPOINT. Swap for the real POST. */
-    console.log("Lead payload ready to send", payload);
-
+    /* Preview validation only. No endpoint, payload logging or lead conversion. */
     card.classList.add("done");
-    card.scrollIntoView({ block:"center" });
+    card.querySelector(".thanks").scrollIntoView({ block:"center" });
   });
 })();
 </script>

@@ -75,7 +75,7 @@ A site folder holds `template.html`, `finder.js`, `extra.css` (copied from `skil
 
 **Corporate or multi-venture homepage:** use the opt-in `skills/venture-story/` template (motion-led, four ecosystems, filterable venture directory). Build: `python3 $R/skills/venture-story/build.py $R/skills/venture-story/examples/champions --out ./dist`. See its `SKILL.md`.
 
-**Paid-campaign landing page (one offer, one form):** use the opt-in `skills/campaign-landing/` template (SPAN brand, headline variants per ad group, work-email gate, sweepable compare chart, cited sources, halftone wordmark footer). Build: `python3 $R/skills/campaign-landing/build.py $R/skills/campaign-landing/examples/span-peo-eor --out ./dist/peo-eor.html`. See its `SKILL.md`.
+**SPAN landing page (one offer, one form):** start with the portable `span-landing-page` skill in Champ-Deep/champ-skills (`design/span-landing-page/`). This plugin retains `skills/campaign-landing/` as the implementation: Dither Grid hero, four-field work-email form, optional count-backed separate bento boards, visual question rail and halftone footer. Use `examples/span-msp-us` when counts and client proofs are absent, or `examples/span-peo-eor` when verified figures exist. Build: `python3 $R/skills/campaign-landing/build.py $R/skills/campaign-landing/examples/span-msp-us --out ./dist/msp.html`. Unwired forms are previews, not lead capture.
 
 ## The rules every refreshed page meets
 

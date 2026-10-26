@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0
+- SPAN landing-page skill extracted into the portable champ-skills entry span-landing-page. Plugin campaign-landing remains its renderer.
+- Added count-free MSP sample campaign and optional band, clients, comparison and citations. No copied PEO figures when evidence is absent.
+- Form labels and phone optionality adapt to the offer. Unwired forms show truthful preview feedback, not fake lead capture.
+- Added build tests for independent optional sections, MSP output and safe inline-script JSON.
+
 ## 0.6.3 (25 Oct 2026)
 - campaign-landing: stat band inverted to white with green figures as a standing rule (see SKILL.md).
 
