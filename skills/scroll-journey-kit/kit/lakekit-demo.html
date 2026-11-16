@@ -166,14 +166,16 @@ nav.top .links a{text-decoration:none;transition:color .3s}nav.top .links a:hove
 @property --mk-a{syntax:"<angle>";inherits:false;initial-value:0deg}
 
 /* ---- magnetic: the control leans toward the pointer (magnetic-fill-button) ---- */
+[data-mk]:is(a,button):focus-visible{outline:2px solid currentColor;outline-offset:4px}
 [data-mk~="magnetic"]{translate:var(--mx,0px) var(--my,0px);transition:translate .22s var(--mk-ease)}
+[data-mk~="magnetic"]:focus-visible{translate:none}
 
 /* ---- glow: two blurred lights follow the pointer along the bottom edge (whats-new-glow-button) ---- */
 [data-mk~="glow"]{position:relative;overflow:hidden;isolation:isolate;--glow-x:50%}
-.mk-g{position:absolute;bottom:-108%;height:180%;width:112%;border-radius:999px;filter:blur(23px);opacity:.26;pointer-events:none;z-index:-1;transition:left .22s ease-out,transform .22s ease-out,opacity .22s ease-out}
+.mk-g{position:absolute;bottom:-108%;height:180%;width:112%;border-radius:999px;filter:blur(23px);opacity:.26;pointer-events:none;z-index:-1;transition:transform .22s ease-out,opacity .22s ease-out}
 .mk-g.a{left:calc(var(--glow-x) - 78%);background:linear-gradient(145deg,#ffd77a,var(--mk-accent) 43%,#7a4a00)}
 .mk-g.b{left:calc(var(--glow-x) - 30%);background:linear-gradient(145deg,#c9ceee,var(--mk-accent2) 45%,#2c2790)}
-[data-mk~="glow"]:hover .mk-g,[data-mk~="glow"]:focus-visible .mk-g{opacity:.95;transform:translateY(-19px)}
+[data-mk~="glow"]:hover .mk-g,[data-mk~="glow"]:focus-visible .mk-g{opacity:.5;transform:translateY(-19px)}
 
 @media (hover:none){.mk-g{display:none}}
 
@@ -194,7 +196,7 @@ nav.top .links a{text-decoration:none;transition:color .3s}nav.top .links a:hove
 [data-mk~="swap"]:hover .mk-l>span+span,[data-mk~="swap"]:focus-visible .mk-l>span+span{transform:none}
 
 /* ---- underline: a gradient line grows under the label (gradient-underline-button) ---- */
-[data-mk~="underline"]{background:linear-gradient(90deg,var(--mk-accent),var(--mk-mag)) no-repeat 0 100%/0 2px;padding-bottom:3px;transition:background-size .45s var(--mk-ease)}
+[data-mk~="underline"]{background-image:linear-gradient(90deg,var(--mk-accent),var(--mk-mag));background-repeat:no-repeat;background-position:0 100%;background-size:0 2px;padding-bottom:3px;transition:background-size .45s var(--mk-ease)}
 [data-mk~="underline"]:hover,[data-mk~="underline"]:focus-visible{background-size:100% 2px}
 
 /* ---- spot: pointer-following wash plus a luminous top rail (social-highlight-cards) ---- */
@@ -266,12 +268,25 @@ html.rv-on .rv.in,html.rv-on [data-mk~="reveal"].in{opacity:1;transform:none}
   opacity:clamp(0,calc((var(--p,0) - .4) * 3),1);transform:translateY(calc((1 - var(--p,0)) * 60px))}
 
 @media (prefers-reduced-motion:reduce){
+  [data-mk~="magnetic"]{translate:none}
+  .mk-g{display:none}
+  [data-mk~="shine"]::after,[data-mk~="shine"]:is(:hover,:focus-visible)::after{animation:none;transition:none}
+  [data-mk~="swap"]:is(:hover,:focus-visible) .mk-l>span:first-child{transform:none}
+  [data-mk~="swap"]:is(:hover,:focus-visible) .mk-l>span+span{transform:translateY(125%)}
   [data-mk~="magnetic"],.mk-g,.mk-l>span,.mk-w>i,[data-mk-slide]>.mk-ind,[data-mk~="underline"]{transition:none}
   html.rv-on .rv,html.rv-on [data-mk~="reveal"]{opacity:1;transform:none;transition:none}
   .mk-w>i{transform:none}
   .lk-journey{height:auto}.lk-stage{position:relative;height:auto;min-height:100svh}
   .lk-horizon,.lk-title{transform:none;opacity:1}.lk-next{opacity:1;transform:none}
 }
+
+/* Disabled controls retain their host semantics and never advertise motion. */
+[data-mk~="magnetic"]:is(:disabled,[aria-disabled="true"]){translate:none}
+[data-mk~="glow"]:is(:disabled,[aria-disabled="true"]) .mk-g{display:none}
+[data-mk~="shine"]:is(:disabled,[aria-disabled="true"])::after{opacity:0;animation:none}
+[data-mk~="swap"]:is(:disabled,[aria-disabled="true"]) .mk-l>span:first-child{transform:none}
+[data-mk~="swap"]:is(:disabled,[aria-disabled="true"]) .mk-l>span+span{transform:translateY(125%)}
+[data-mk~="underline"]:is(:disabled,[aria-disabled="true"]){background-size:0 2px}
 
 </style>
 </head>
@@ -408,7 +423,7 @@ var LK=window.LakeKit={};
 
 /* magnetic */
 if(FINE&&!RM)mk("magnetic").forEach(function(el){
-  el.addEventListener("pointermove",function(e){var r=el.getBoundingClientRect();
+  el.addEventListener("pointermove",function(e){if(el.matches(":disabled,[aria-disabled='true']"))return;var r=el.getBoundingClientRect();
     el.style.setProperty("--mx",((e.clientX-(r.left+r.width/2))*0.10).toFixed(1)+"px");
     el.style.setProperty("--my",((e.clientY-(r.top+r.height/2))*0.18).toFixed(1)+"px");});
   el.addEventListener("pointerleave",function(){el.style.setProperty("--mx","0px");el.style.setProperty("--my","0px");});
@@ -418,21 +433,22 @@ if(FINE&&!RM)mk("magnetic").forEach(function(el){
 mk("glow").forEach(function(el){
   ["a","b"].forEach(function(c){var s=document.createElement("span");s.className="mk-g "+c;s.setAttribute("aria-hidden","true");el.appendChild(s);});
   if(FINE&&!RM){
-    el.addEventListener("pointermove",function(e){var r=el.getBoundingClientRect();el.style.setProperty("--glow-x",Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100)).toFixed(1)+"%");});
+    el.addEventListener("pointermove",function(e){if(el.matches(":disabled,[aria-disabled='true']"))return;var r=el.getBoundingClientRect();el.style.setProperty("--glow-x",Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100)).toFixed(1)+"%");});
     el.addEventListener("pointerleave",function(){el.style.setProperty("--glow-x","50%");});
   }
 });
 
 /* swap: text-only elements. The label stays readable through aria-label */
 mk("swap").forEach(function(el){
-  if(el.children.length)return;
+  if(RM||el.children.length)return;
   var label=el.textContent.replace(/\s+/g," ").trim(),w=document.createElement("span");
   w.className="mk-sw";w.setAttribute("aria-hidden","true");
   label.split("").forEach(function(ch,i){
     var l=document.createElement("span"),a=document.createElement("span"),b=document.createElement("span");
     l.className="mk-l";l.style.setProperty("--i",i);a.textContent=b.textContent=ch===" "?" ":ch;l.appendChild(a);l.appendChild(b);w.appendChild(l);
   });
-  el.setAttribute("aria-label",label);el.textContent="";el.appendChild(w);
+  if(!el.hasAttribute("aria-label")&&!el.hasAttribute("aria-labelledby"))el.setAttribute("aria-label",label);
+  el.textContent="";el.appendChild(w);
 });
 
 /* spot and tilt */

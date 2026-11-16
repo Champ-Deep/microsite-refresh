@@ -11,7 +11,7 @@ var LK=window.LakeKit={};
 
 /* magnetic */
 if(FINE&&!RM)mk("magnetic").forEach(function(el){
-  el.addEventListener("pointermove",function(e){var r=el.getBoundingClientRect();
+  el.addEventListener("pointermove",function(e){if(el.matches(":disabled,[aria-disabled='true']"))return;var r=el.getBoundingClientRect();
     el.style.setProperty("--mx",((e.clientX-(r.left+r.width/2))*0.10).toFixed(1)+"px");
     el.style.setProperty("--my",((e.clientY-(r.top+r.height/2))*0.18).toFixed(1)+"px");});
   el.addEventListener("pointerleave",function(){el.style.setProperty("--mx","0px");el.style.setProperty("--my","0px");});
@@ -21,21 +21,22 @@ if(FINE&&!RM)mk("magnetic").forEach(function(el){
 mk("glow").forEach(function(el){
   ["a","b"].forEach(function(c){var s=document.createElement("span");s.className="mk-g "+c;s.setAttribute("aria-hidden","true");el.appendChild(s);});
   if(FINE&&!RM){
-    el.addEventListener("pointermove",function(e){var r=el.getBoundingClientRect();el.style.setProperty("--glow-x",Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100)).toFixed(1)+"%");});
+    el.addEventListener("pointermove",function(e){if(el.matches(":disabled,[aria-disabled='true']"))return;var r=el.getBoundingClientRect();el.style.setProperty("--glow-x",Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100)).toFixed(1)+"%");});
     el.addEventListener("pointerleave",function(){el.style.setProperty("--glow-x","50%");});
   }
 });
 
 /* swap: text-only elements. The label stays readable through aria-label */
 mk("swap").forEach(function(el){
-  if(el.children.length)return;
+  if(RM||el.children.length)return;
   var label=el.textContent.replace(/\s+/g," ").trim(),w=document.createElement("span");
   w.className="mk-sw";w.setAttribute("aria-hidden","true");
   label.split("").forEach(function(ch,i){
     var l=document.createElement("span"),a=document.createElement("span"),b=document.createElement("span");
     l.className="mk-l";l.style.setProperty("--i",i);a.textContent=b.textContent=ch===" "?" ":ch;l.appendChild(a);l.appendChild(b);w.appendChild(l);
   });
-  el.setAttribute("aria-label",label);el.textContent="";el.appendChild(w);
+  if(!el.hasAttribute("aria-label")&&!el.hasAttribute("aria-labelledby"))el.setAttribute("aria-label",label);
+  el.textContent="";el.appendChild(w);
 });
 
 /* spot and tilt */

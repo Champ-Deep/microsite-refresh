@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.0
+- Documented per-microsite magnetic, glow, shine, swap and underline selection through existing data-mk attributes. Default templates and native actions stay unchanged.
+- Fixed CTA focus outlines, swap accessible-name preservation, disabled feedback and reduced-motion border rotation. Preserve underline host fills and cap active glow opacity for readable labels. Synced LakeKit's demo, globe reference and venture-story copy. Hostile-host focus and aria-disabled effect checks cover the embedded sources too.
+- Added browser regression checks with portable enabled/disabled previews, keyboard and touch checks, and three-width screenshots.
+
 ## 0.7.0
 - SPAN landing-page skill extracted into the portable champ-skills entry span-landing-page. Plugin campaign-landing remains its renderer.
 - Added count-free MSP sample campaign and optional band, clients, comparison and citations. No copied PEO figures when evidence is absent.

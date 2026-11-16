@@ -76,6 +76,8 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/refresh-site/scripts/build_site.py <build-f
 ```
 This writes `dist/artifact.html` (the preview) and `dist/handoff/` (the full document, `index.md` twin, `robots.txt`, `llms.txt` and `sitemap.xml`). Design passes follow `frontend-design-pro`: 21st.dev components when connected, full-width layout and brand colours taken from the logo. Motion follows the `scroll-journey-kit` skill: the verify-skin keeps its drop-a-file hero as the interactive scene, add the LakeKit micro-interactions across nav, buttons, finder pills and cards (at least six distinct effects), split headlines, a count-up on the report numbers, the progress bar and a section rail. The opening glow-horizon scene is optional on list pages where the visitor arrives with a purpose; keep the drop box above the fold on phones.
 
+Select CTA effects per microsite using the existing `data-mk` contract in `scroll-journey-kit/kit/README.md`: magnetic, glow, shine, swap or underline, one effect per control and not the same effect everywhere. Keep native actions and handlers. Default templates remain unchanged until the author adds attributes and the kit. Include enabled and disabled previews, keyboard and reduced-motion evidence from `scroll-journey-kit/tests/browser_check.py` when changing this layer.
+
 ### 7. Gates (all must pass)
 1. `no-ai-slop` in Gate mode on every line of copy, plus `python3 ${CLAUDE_PLUGIN_ROOT}/skills/no-ai-slop/slop_lint.py <file>`.
 2. No em or en dashes: `grep -cP '\xe2\x80[\x93\x94]'` prints 0 on every output file.
