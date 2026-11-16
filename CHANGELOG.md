@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0
+
+- Add the explicitly selected prospecting-one-page sibling with five content areas, validated intake, a runnable Champions review fixture and build tests. Other builders are unchanged. Preview only; CTA variants, preferred-source and audio remain separate.
+
 ## 0.7.0
 - SPAN landing-page skill extracted into the portable champ-skills entry span-landing-page. Plugin campaign-landing remains its renderer.
 - Added count-free MSP sample campaign and optional band, clients, comparison and citations. No copied PEO figures when evidence is absent.
