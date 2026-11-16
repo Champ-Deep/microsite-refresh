@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.1
+- Fixed verify-skin mega-menu search hint interpolation and added a build regression test for unevaluated escape expressions.
+
 ## 0.7.0
 - SPAN landing-page skill extracted into the portable champ-skills entry span-landing-page. Plugin campaign-landing remains its renderer.
 - Added count-free MSP sample campaign and optional band, clients, comparison and citations. No copied PEO figures when evidence is absent.

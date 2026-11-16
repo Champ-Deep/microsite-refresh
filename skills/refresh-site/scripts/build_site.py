@@ -72,7 +72,7 @@ def build(d, out):
     mega = (
         '<div class="mega" id="mega" data-open="">'
         '<div class="mpanel" data-panel="find">'
-        '<div class="msearch"><label class="mono" for="msq">Search lists</label><input id="msq" type="search" placeholder="{E(hint)}" autocomplete="off" data-finder-input>'
+        f'<div class="msearch"><label class="mono" for="msq">Search lists</label><input id="msq" type="search" placeholder="{E(hint)}" autocomplete="off" data-finder-input>'
         '<p class="hint-s">Or pick who you sell to.</p><a class="mall" href="#lists">See every list on one page <span aria-hidden="true">&#8594;</span></a></div>'
         '<div class="mcols">' + "".join(col(g) for g in groups) + "</div></div>"
         '<div class="mpanel" data-panel="fix"><div class="mcols fixcols">' + col(dict(svc, who="Clean, verify and complete the list you have"), 8) +
