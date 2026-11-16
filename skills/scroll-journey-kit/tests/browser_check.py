@@ -24,6 +24,7 @@ def preview(enabled):
 <button id="{effect}"{attr}>Request sample</button>
 <a id="{effect}-link" href="#result"{attr}>View details</a>
 <button id="{effect}-disabled" disabled{attr}>Unavailable</button>
+<a id="{effect}-aria-disabled" href="#result" aria-disabled="true"{attr}>Unavailable link</a>
 </div></section>''')
     return '''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -77,14 +78,35 @@ def check(page, base, enabled, reduced, touch, out):
         assert page.evaluate('(id)=>actions[id]||0', effect + '-disabled') == 0
         assert disabled.is_disabled()
         if enabled:
-            assert disabled.evaluate('(e)=>getComputedStyle(e).translate') in ('none', '0px')
-            if effect == 'shine':
-                assert disabled.evaluate('(e)=>getComputedStyle(e,"::after").animationName') == 'none'
+            for control in (disabled, page.locator(f'#{effect}-aria-disabled')):
+                control.hover(force=True, position={'x': 8, 'y': 8})
+                for focused in (False, True):
+                    if focused:
+                        control.focus()
+                        page.keyboard.press('Shift')
+                    page.wait_for_timeout(900)
+                    assert control.evaluate('(e)=>getComputedStyle(e).translate') in ('none', '0px'), (effect, 'disabled translate')
+                    if effect == 'glow':
+                        assert control.locator('.mk-g').first.evaluate('(e)=>getComputedStyle(e).display') == 'none', 'disabled glow'
+                    if effect == 'shine':
+                        assert control.evaluate('(e)=>getComputedStyle(e,"::after").animationName') == 'none', 'disabled shine'
+                    if effect == 'swap' and not reduced:
+                        assert control.locator('.mk-l>span').first.evaluate('(e)=>getComputedStyle(e).transform') == 'none', 'disabled swap'
+                    if effect == 'underline':
+                        assert control.evaluate('(e)=>getComputedStyle(e).backgroundSize') == '0px 2px', 'disabled underline'
     # Use Tab, not just programmatic focus, and preserve author-provided names.
     page.goto(f'{base}/{name}.html')
     page.keyboard.press('Tab')
     assert page.locator('#magnetic').evaluate('(e)=>e===document.activeElement')
     if enabled:
+        page.set_content('<style>*:focus,*:focus-visible{outline:none}' + KIT.joinpath('lakekit.css').read_text() + '</style><button data-mk="shine">Kit button</button><a href="#result" data-mk="underline">Kit link</a><button>Plain button</button>')
+        for label, expected in [('Kit button', 'solid'), ('Kit link', 'solid'), ('Plain button', 'none')]:
+            page.keyboard.press('Tab')
+            actual = page.locator(':focus').evaluate('(e)=>getComputedStyle(e).outlineStyle')
+            assert page.locator(':focus').inner_text() == label
+            assert actual == expected, ('hostile host outline', label, actual, expected)
+        page.goto(f'{base}/{name}.html')
+        page.keyboard.press('Tab')
         page.locator('#magnetic').hover(position={'x': 8, 'y': 8})
         mx = page.locator('#magnetic').evaluate('(e)=>e.style.getPropertyValue("--mx")')
         assert bool(mx) == (not reduced and not touch), (reduced, touch, mx)
@@ -151,6 +173,8 @@ def main():
         canonical = KIT.joinpath('lakekit.' + ext).read_text().strip()
         assert canonical == ROOT.joinpath('skills/venture-story/vendor/lakekit.' + ext).read_text().strip()
         assert canonical in KIT.joinpath('lakekit-demo.html').read_text()
+        globe = ROOT.joinpath('skills/signature-hero/reference/LakeB2B_Living_Data_Globe_cobe.html').read_text()
+        assert canonical.replace('*0.10', '*0.30').replace('*0.18', '*0.40') in globe, ('globe kit sync', ext)
     for enabled in (True, False):
         (out / ('enabled.html' if enabled else 'disabled.html')).write_text(preview(enabled))
     server = None
