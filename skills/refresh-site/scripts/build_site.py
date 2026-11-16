@@ -17,8 +17,32 @@ import pathlib
 import re
 import sys
 from html.parser import HTMLParser
+from urllib.parse import quote, urlsplit
 
 E = html.escape
+
+
+def preferred_source(site):
+    enabled = site.get("preferred_source", False)
+    if not isinstance(enabled, bool):
+        raise ValueError("preferred_source must be true or false")
+    if not enabled:
+        return "", ""
+    domain = urlsplit(site["domain"])
+    host = domain.hostname or ""
+    if (domain.scheme != "https" or domain.netloc != host or domain.path not in ("", "/")
+            or domain.query or domain.fragment
+            or not re.fullmatch(r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?", host)
+            or any(not label or len(label) > 63 or label.startswith("-") or label.endswith("-") for label in host.split("."))):
+        raise ValueError("preferred_source requires an HTTPS site.domain with a hostname only")
+    link = (f'<div class="wrap preferred-source"><a href="https://www.google.com/preferences/source?q={quote(host, safe="")}" '
+            f'target="_blank" rel="noopener noreferrer">Add {E(host)} as a preferred source on Google</a></div>')
+    css = ('.nav>.preferred-source{height:auto;justify-content:flex-end;border-top:1px solid var(--rule)}'
+           '.preferred-source a{display:flex;align-items:center;min-height:44px;padding:8px 12px;'
+           'font-size:.92rem;color:var(--ink-2);text-underline-offset:3px;overflow-wrap:anywhere}'
+           '.preferred-source a:hover{background:var(--sheet);color:var(--ink)}'
+           '.nav>.mega{max-height:calc(100dvh - 100% - 16px - env(safe-area-inset-top,0px))}')
+    return link, css
 
 
 def url(base, path):
@@ -29,6 +53,12 @@ def build(d, out):
     d, out = pathlib.Path(d), pathlib.Path(out)
     tpl = (d / "template.html").read_text()
     site = json.loads((d / "site.json").read_text())
+    source_link, source_css = preferred_source(site)
+    if source_link and "{{PREFERRED_SOURCE}}" not in tpl:
+        raise ValueError("Add {{PREFERRED_SOURCE}} before the nav mega panel and {{PREFERRED_SOURCE_CSS}} inside style")
+    if source_link and "{{PREFERRED_SOURCE_CSS}}" not in tpl:
+        raise ValueError("Add {{PREFERRED_SOURCE_CSS}} inside style")
+    tpl = tpl.replace("{{PREFERRED_SOURCE}}", source_link).replace("{{PREFERRED_SOURCE_CSS}}", source_css)
     cat = json.loads((d / "catalog.json").read_text())
     B = cat["base"]
     groups = cat["groups"]

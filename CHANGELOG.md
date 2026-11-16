@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0
+- Verify skin: opt-in Google preferred-source secondary navigation link, visible at mobile widths. Missing or false preserves existing output.
+- Intake and build contract document consent, hostname-derived target, safe new-tab behavior and older-template slots. Regression tests cover enabled, disabled and invalid configuration.
+
 ## 0.7.0
 - SPAN landing-page skill extracted into the portable champ-skills entry span-landing-page. Plugin campaign-landing remains its renderer.
 - Added count-free MSP sample campaign and optional band, clients, comparison and citations. No copied PEO figures when evidence is absent.

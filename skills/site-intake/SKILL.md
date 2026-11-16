@@ -19,6 +19,7 @@ Ask only what the fetch could not settle:
 - which claims are still true and approved (counts like "14 million contacts", client names, guarantees)
 - the robots policy for AI bots (group default: allow all)
 - where the result ships: dev handoff package, Cloudflare, or both
+- whether to enable the optional Google preferred-source link (default: off)
 
 ## 3. Write the files
 `site.json`:
@@ -27,6 +28,7 @@ Ask only what the fetch could not settle:
 - phone, email, and address (leave address empty when the site shows none, and it stays out of the schema)
 - offer: name, description, quantity, service_type, og_title, llms_line
 - nav_cta (the CTA's accessible label)
+- preferred_source: optional boolean, default false. Set true only with owner opt-in. Uses the hostname from the HTTPS domain field, not the local preview host.
 - faq: three or more [q, a] pairs. These are shown on the page AND written to the FAQPage schema, so write them once, here.
 - robots_policy and the logo filename
 
