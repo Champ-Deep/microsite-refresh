@@ -79,6 +79,12 @@ A site folder holds `template.html`, `finder.js`, `extra.css` (copied from `skil
 
 ## The rules every refreshed page meets
 
+### Optional Google preferred source
+
+For the verify skin, add `"preferred_source": true` to `site.json` only when the owner opts in. The secondary navigation link reads `Add {domain} as a preferred source on Google`, using the hostname from the HTTPS `domain` field, and opens Google's source preferences in a new tab with `noopener noreferrer`. It stays visible on phones. Omit the field or set it to false to preserve the existing output. Older copied templates need the two slots described in `skills/refresh-site/SKILL.md`. This link opens Google's preferences, it does not claim the source was added or is eligible.
+
+Regression tests: `python3 -m unittest discover -s skills/refresh-site/tests -v`.
+
 1. Any list on the site is reachable within two clicks of the home page, three at most. Search with no match offers a custom list.
 2. One primary action. The visitor sees value (a graded report on their own file) before giving an email.
 3. No invented claims, people, numbers or logos. Every claim is listed in the brief for sign-off.
