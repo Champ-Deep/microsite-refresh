@@ -32,6 +32,24 @@ Files
 | data-mk-count | number counts up, exact text restored | stats | n/a |
 | data-mk-journey | pinned scene, sets --p 0 to 1, fires lk:progress | .lk-journey wrapper | n/a |
 
+## Select CTA interactions per microsite
+
+Keep selection in the microsite's template through `data-mk`, not a new site.json setting. Effects are opt-in. Leave the attribute off for a default CTA, and omit the kit entirely for a disabled build. Do not rewrite href, type, disabled, event listeners or form handlers. A disabled link's activation remains the host's responsibility; use native disabled buttons where possible.
+
+Use one effect per CTA: magnetic for the primary action, glow for a secondary button, shine for a request action, swap for a text-only navigation link, underline for an inline link. Do not put magnetic on every primary-looking button. Swap rolls identical text, never changes the action wording, and preserves author-provided aria-label and aria-labelledby. Controls containing child markup stay untouched by swap.
+
+```html
+<button type="submit" data-mk="magnetic">Request sample</button>
+<button type="button" data-mk="glow">Talk to sales</button>
+<a href="#request" data-mk="shine">Request access</a>
+<a href="#services" data-mk="swap">Our services</a>
+<a href="#details" data-mk="underline">View details</a>
+```
+
+Keyboard: Tab shows a visible outline on every CTA. Enter activates links and buttons; Space activates buttons using native semantics. Glow, shine, swap and underline respond to focus-visible. Magnetic stays still for keyboard users. Reduced motion disables magnetic movement, glow tracking, border rotation and letter rolling; focus outlines and instant underlines remain. Native disabled and aria-disabled controls do not advertise these effects.
+
+Run `python3 skills/scroll-journey-kit/tests/browser_check.py --out /absolute/evidence` from the plugin root with Playwright and Chromium available. It writes standalone enabled.html and disabled.html previews, viewport and focus screenshots, and results.json; its local 3100+ server always shuts down. Checks cover clicks, native keyboard activation, accessible names, disabled/default controls, pointer/touch and reduced motion at 375, 768 and 1440. Open the screenshots before review.
+
 ## Journey markup
 ```html
 <div class="lk-journey" data-mk-journey>
