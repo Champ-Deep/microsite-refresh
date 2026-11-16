@@ -1,0 +1,41 @@
+{
+  "name": "Champions Group",
+  "domain": "https://www.championsgroup.com",
+  "email": "info@championsgroup.com",
+  "logo": "logo.png",
+  "description": "A multi-venture innovation group across data, technology, wellness and startup acceleration.",
+  "overview": {
+    "title": "A group built around possibility.",
+    "body": "Champions Group brings data intelligence, technology, wellness and startup acceleration into one multi-venture innovation group."
+  },
+  "services": {
+    "title": "Services and solutions",
+    "body": "Explore the capabilities across the group. Contact us to find the team that fits your requirement.",
+    "items": [
+      {
+        "title": "Data and business intelligence",
+        "body": "Lake B2B and SPAN Global Services support business teams with contact data and global data solutions."
+      },
+      {
+        "title": "Technology and communications",
+        "body": "Cirralogix provides cloud and technology solutions. IP Momentum focuses on business communications and VoIP services."
+      },
+      {
+        "title": "Founders and talent",
+        "body": "Champions Accelerator supports founders. Recruit Champ provides recruitment and talent solutions."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact",
+    "body": "Describe the service you need and the market you work in. Email the group to start a conversation."
+  },
+  "about": {
+    "title": "About Champions Group",
+    "body": "The group connects ventures across data and services, the Champions ecosystem, the .fit ecosystem and technology. Each venture brings its own specialism."
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "body": "Sample policy text for template review only. This preview has no lead form, analytics or third-party scripts. Replace this paragraph with the company-approved privacy policy before publication."
+  }
+}
